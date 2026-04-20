@@ -5,6 +5,6 @@ class EightBallCommand : PartyCommand {
     private val responses = listOf("Yes", "No", "Maybe", "Ask again later", "Definitely!")
 
     override fun execute(args: List<String>): String {
-        return "8Ball: ${responses.random()}"
+        return responses.random()
     }
 }

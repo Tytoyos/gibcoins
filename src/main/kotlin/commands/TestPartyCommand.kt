@@ -16,11 +16,11 @@ class TestPartyCommand : BaseCommand() {
             ClientCommandManager.literal("testpartychat")
                 .then(ClientCommandManager.argument("message", StringArgumentType.greedyString())
                     .executes { context ->
-                        val mockMessage = StringArgumentType.getString(context, "message")
+                        val testMessage = StringArgumentType.getString(context, "message")
 
-                        val fullMock = "Party > [MVP+] Friend: $mockMessage"
+                        val formattedMessage = "Party > [MVP+] Friend: $testMessage"
 
-                        processIncomingChat(fullMock)
+                        processIncomingChat(formattedMessage)
                         0
                     }
                 )
