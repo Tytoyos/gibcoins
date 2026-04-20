@@ -5,7 +5,6 @@ import commands.FunFactCommand
 import commands.TestPartyCommand
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
-import net.minecraft.client.MinecraftClient
 import org.slf4j.LoggerFactory
 
 object GibCoins : ClientModInitializer {
