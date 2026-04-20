@@ -28,6 +28,7 @@ object CommandManager {
     init {
         // Register commands here
         register(EightBallCommand())
+        register(ForcefemCommand())
     }
 
     private fun register(cmd: PartyCommand) {
