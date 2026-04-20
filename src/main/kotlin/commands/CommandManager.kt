@@ -6,9 +6,14 @@ import net.minecraft.text.Text
 object CommandManager {
 
     fun processIncomingChat(plainText: String) {
+<<<<<<< HEAD
         val cleanText = plainText.replace("§[0-9a-fk-orx]".toRegex(), "")
         if (cleanText.contains("Party >")) {
             val actualMessage = cleanText.substringAfter(": ").trim()
+=======
+        if (plainText.contains("Party >")) {
+            val actualMessage = plainText.substringAfter(": ").trim()
+>>>>>>> 950f7f09dec512bc8c13a18c12dcf08d83e99a18
             val response = handleChat(actualMessage)
 
             if (response != null) {
