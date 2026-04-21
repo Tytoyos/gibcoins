@@ -3,14 +3,11 @@
 	"id": "gibcoins",
 	"version": "${version}",
 	"name": "GibCoins",
-	"description": "Addon for Hypixel Skyblock. May get you banned.",
+	"description": "Addon for Hypixel Skyblock. Use at your own risk.",
 	"authors": [
 		"/"
 	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
+
 	"license": "CC0-1.0",
 	"icon": "assets/gibcoins/icon.png",
 	"environment": "client",
@@ -27,7 +24,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.19.1",
-		"minecraft": "~1.21.11",
+		"minecraft": "~1.21.10",
 		"java": ">=21",
 		"fabric-api": "*",
 		"fabric-language-kotlin": "*"
