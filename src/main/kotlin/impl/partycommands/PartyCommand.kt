@@ -1,4 +1,4 @@
-package commands
+package impl.partycommands
 
 interface PartyCommand {
     val name: String

@@ -2,7 +2,7 @@ package commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
-import commands.CommandManager.processIncomingChat
+import impl.partycommands.CommandManager.processIncomingChat
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess

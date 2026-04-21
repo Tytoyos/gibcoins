@@ -1,4 +1,4 @@
-package commands
+package impl.partycommands
 
 class EightBallCommand : PartyCommand {
     override val name = "8ball"

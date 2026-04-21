@@ -1,6 +1,6 @@
 package com.github.tytoyos.gibcoins
 
-import commands.CommandManager
+import impl.partycommands.CommandManager
 import commands.FunFactCommand
 import commands.TestPartyCommand
 import net.fabricmc.api.ClientModInitializer

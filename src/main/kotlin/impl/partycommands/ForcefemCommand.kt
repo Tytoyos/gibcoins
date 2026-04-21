@@ -1,5 +1,4 @@
-package commands
-
+package impl.partycommands
 
 class ForcefemCommand : PartyCommand {
     override val name = "forcefem"
@@ -9,7 +8,7 @@ class ForcefemCommand : PartyCommand {
 
         val target = args[0]
         val femroll = (1..10).random()
-        val amount = listOf("100mg", "1mg", "50mg", "1000mg", "500mg")
+        val amount = listOf("100mg", "1mg", "50mg", "1000mg", "500mg").random()
         val responses = listOf("Laced $target's drink with $amount of estrogen!", "No","$target is already beyond that stage.",
                                 "Secretly putting a syringe with $amount of estrogen in $target's ass!!")
 
