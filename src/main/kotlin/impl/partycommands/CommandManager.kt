@@ -32,6 +32,8 @@ object CommandManager {
         // Register commands here
         register(ForcefemCommand())
         register(GambleKickCommand())
+        register(PartyFunFact())
+        register(ShitterCheck())
     }
 
     private fun register(cmd: PartyCommand) {
