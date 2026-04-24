@@ -12,16 +12,29 @@ class GambleKickCommand : PartyCommand {
         val target = args[0]
         val kickRoll = (1..4).random()
         val playerName = MinecraftClient.getInstance().session.username
-        val selfKick = (1..10).random()
+        val selfKick = (1..7).random()
 
         if (kickRoll == 2) {
-            return "!kick $target"
+            Thread {
+                Thread.sleep(1000)
+                MinecraftClient.getInstance().networkHandler?.sendChatCommand("pc !kick $target")
+            }
+            return ""
         }
 
         if (sender.equals(playerName, true) && selfKick == 5) {
-            return "/p leave"
+            Thread {
+                Thread.sleep(1000)
+                MinecraftClient.getInstance().networkHandler?.sendChatCommand("p leave")
+            }
+            return ""
         }
 
-        return "$target was lucky."
+        Thread {
+            Thread.sleep(1000)
+            MinecraftClient.getInstance().networkHandler?.sendChatCommand("pc $target was lucky!")
+        }
+
+        return ""
     }
 }

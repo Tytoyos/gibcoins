@@ -1,5 +1,7 @@
 package impl.partycommands
 
+import net.minecraft.client.MinecraftClient
+
 
 class ShitterCheck : PartyCommand {
        override val name = "shittercheck"
@@ -17,18 +19,35 @@ class ShitterCheck : PartyCommand {
         val answerKaiine = "Kaiine is a good boy!! Not a shitter :3"                 //variable, so its expandable
 
         if (target.lowercase() == "regocike") {
-            return answerRego.random()
+            Thread {
+                Thread.sleep(1000)
+                MinecraftClient.getInstance().networkHandler?.sendChatCommand("pc ${answerRego.random()}")
+            }
+            return ""
         }
 
         if (target.lowercase() == "moocwazy") {
-            return answerMoocwazy
+            Thread {
+                Thread.sleep(1000)
+                MinecraftClient.getInstance().networkHandler?.sendChatCommand("pc ${answerMoocwazy.random()}")
+            }
+            return ""
         }
 
         if (target.lowercase() == "kaiine") {
-            return answerKaiine
+            Thread {
+                Thread.sleep(1000)
+                MinecraftClient.getInstance().networkHandler?.sendChatCommand("pc ${answerKaiine.random()}")
+            }
+            return ""
         }
 
-        return answer.random()
+        Thread {
+            Thread.sleep(1000)
+            MinecraftClient.getInstance().networkHandler?.sendChatCommand("pc ${answer.random()}")
+        }
+
+        return ""
     }
 
 }
