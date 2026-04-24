@@ -12,7 +12,7 @@ class HelpCommand : BaseCommand() {
         registryAccess: CommandRegistryAccess
     ) {
         dispatcher.register(
-            ClientCommandManager.literal("help")
+            ClientCommandManager.literal("tyhelp")
                 .executes { context ->
                     context.source.sendFeedback(Text.literal("List of Party Commands: \n" +
                             "!forcefem <name>  -> forcefully feminizes a player. \n" +
