@@ -3,7 +3,10 @@ package impl.partycommands
 
 class ShitterCheck : PartyCommand {
        override val name = "shittercheck"
+
     override fun execute(sender: String, args: List<String>): String {
+        if (args.isEmpty()) return "Usage: !shittercheck <player>"
+
         val target = args[0]
         val answer = listOf("$target is a shitter.","$target is not a shitter.","I'm not sure on this one.",
                             "STAY AWAY FROM THIS GUY!!!","$target saved my cat from a burning building!",

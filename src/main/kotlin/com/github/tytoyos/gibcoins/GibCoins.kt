@@ -2,6 +2,7 @@ package com.github.tytoyos.gibcoins
 
 import impl.partycommands.CommandManager
 import commands.FunFactCommand
+import commands.HelpCommand
 import commands.TestPartyCommand
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
@@ -12,6 +13,7 @@ object GibCoins : ClientModInitializer {
 	override fun onInitializeClient() {
 		FunFactCommand().initialize()
 		TestPartyCommand().initialize()
+		HelpCommand().initialize()
 
 		ClientReceiveMessageEvents.CHAT.register { message, _, _, _, _ ->
 			CommandManager.processIncomingChat(message.string)
