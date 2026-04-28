@@ -7,7 +7,6 @@ object CommandManager {
 
     private val commands = mutableMapOf<String, PartyCommand>()
     private const val PREFIX = "!"
-    private val partyMembers = mutableSetOf<String>()
 
     fun processIncomingChat(plainText: String) {
         val cleanText = plainText.replace("§[0-9a-fk-orx]".toRegex(), "")
@@ -34,6 +33,7 @@ object CommandManager {
         register(GambleKickCommand())
         register(PartyFunFact())
         register(ShitterCheck())
+        register(DelayTestCommand())
     }
 
     private fun register(cmd: PartyCommand) {
