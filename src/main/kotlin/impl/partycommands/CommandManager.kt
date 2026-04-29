@@ -19,7 +19,7 @@ object CommandManager {
             if (response != null) {
                 val client = MinecraftClient.getInstance()
                 if (client.networkHandler != null) {
-                    client.networkHandler?.sendChatCommand("pc $response")
+                    client.networkHandler?.sendChatMessage(response)
                 } else {
                     client.player?.sendMessage(Text.literal("§d[Test Party Chat] §f/pc $response"), false)
                 }
@@ -33,7 +33,7 @@ object CommandManager {
         register(GambleKickCommand())
         register(PartyFunFact())
         register(ShitterCheck())
-        register(DelayTestCommand())
+        //register(DelayTestCommand())
     }
 
     private fun register(cmd: PartyCommand) {

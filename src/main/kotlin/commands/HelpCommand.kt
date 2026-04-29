@@ -12,11 +12,13 @@ class HelpCommand : BaseCommand() {
         registryAccess: CommandRegistryAccess
     ) {
         dispatcher.register(
-            ClientCommandManager.literal("tyhelp")
+            ClientCommandManager.literal("gchelp")
                 .executes { context ->
                     context.source.sendFeedback(Text.literal("List of Party Commands: \n" +
                             "!forcefem <name>  -> forcefully feminizes a player. \n" +
-                            "!gamblekick <name> -> has a 25% chance to kick the target. \n"))
+                            "!gamblekick <name> -> has a 25% chance to kick the target. \n" +
+                            "!shittercheck <name> -> checks if the player is a shitter. \n" +
+                            "!funfact -> sends a fun fact."))
                     1
                 }
         )

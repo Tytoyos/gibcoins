@@ -1,6 +1,8 @@
 package impl.partycommands
 
 import net.minecraft.client.MinecraftClient
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 
 
 class GambleKickCommand : PartyCommand {
@@ -16,14 +18,40 @@ class GambleKickCommand : PartyCommand {
         val selfKick = (1..7).random()
 
         if (kickRoll == 2) {
-            return "!kick $target"
+
+            CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                MinecraftClient.getInstance().execute {
+                    MinecraftClient.getInstance().networkHandler?.sendChatMessage("!kick $target")
+                }
+            }
+            return ""
         }
 
         if (sender.equals(playerName, true) && selfKick == 5) {
-            return "/p leave"
+
+            CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                MinecraftClient.getInstance().execute {
+                    MinecraftClient.getInstance().networkHandler?.sendChatMessage("/p leave")
+                }
+            }
+            return ""
         }
 
-        return "$target was lucky!"
+        if (target.equals("JakeLegend", true)) {
+
+            CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                MinecraftClient.getInstance().execute {
+                    MinecraftClient.getInstance().networkHandler?.sendChatMessage("!kick JakeLegend")
+                }
+            }
+            return ""
+        }
+            CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                MinecraftClient.getInstance().execute {
+                    MinecraftClient.getInstance().networkHandler?.sendChatMessage("$target was lucky!")
+                }
+            }
+        return ""
         }
     }
 }

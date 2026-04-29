@@ -1,5 +1,9 @@
 package impl.partycommands
 
+import net.minecraft.client.MinecraftClient
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
+
 class ShitterCheck : PartyCommand {
        override val name = "shittercheck"
 
@@ -23,22 +27,44 @@ class ShitterCheck : PartyCommand {
                 "Regocike? More like Shittercike!", "*redacted*",
                 "Definitely checkout this guy's hard drive.", "I don't know, ask moocwazy."
             )
-            val answerMoocwazy = "This player is very pro, trust frfr (not payed)."      //variable, so its expandable
+            val answerMoocwazy = "This player is very pro, trust frfr (not paid)."      //variable, so its expandable
             val answerKaiine = "Kaiine is a good boy!! Not a shitter :3"                 //variable, so its expandable
 
             if (target.lowercase() == "regocike") {
-                return answerRego.random()
+
+                CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                    MinecraftClient.getInstance().execute {
+                        MinecraftClient.getInstance().networkHandler?.sendChatMessage(answerRego.random())
+                    }
+                }
+                return ""
             }
 
             if (target.lowercase() == "moocwazy") {
-                return answerMoocwazy
+
+                CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                    MinecraftClient.getInstance().execute {
+                        MinecraftClient.getInstance().networkHandler?.sendChatMessage(answerMoocwazy)
+                    }
+                }
+                return ""
             }
 
             if (target.lowercase() == "kaiine") {
-                return answerKaiine
-            }
 
-            return answer.random()
+                CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                    MinecraftClient.getInstance().execute {
+                        MinecraftClient.getInstance().networkHandler?.sendChatMessage(answerKaiine)
+                    }
+                }
+                return ""
+            }
+            CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                MinecraftClient.getInstance().execute {
+                    MinecraftClient.getInstance().networkHandler?.sendChatMessage(answer.random())
+                }
+            }
+            return ""
         }
     }
 }

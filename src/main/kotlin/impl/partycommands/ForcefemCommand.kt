@@ -1,5 +1,9 @@
 package impl.partycommands
 
+import net.minecraft.client.MinecraftClient
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
+
 class ForcefemCommand : PartyCommand {
     override val name = "forcefem"
 
@@ -18,16 +22,32 @@ class ForcefemCommand : PartyCommand {
             val responsesKaiine = listOf("ESTROGEN OVERLOAD!!!!", "UH OH, I ACCIDENTALLY STABBED HIS HEART. HE DED")
 
             if (target.lowercase() == "kaiine" && femRoll == 5) {
-                return responsesKaiine.random()
+
+                CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                    MinecraftClient.getInstance().execute {
+                        MinecraftClient.getInstance().networkHandler?.sendChatMessage(responsesKaiine.random())
+                    }
+                }
+                return ""
             }
 
             // add easter egg for moocwazy
 
             if ((1..20).random() == 5) {
-                return "DIVINE INTERVENTION!!! ${target.uppercase()} HAS BEEN TURNED INTO THE TRUE EMBODIMENT OF ESTROGEN!!!!!"
-            }
 
-            return responses.random()
+                CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                    MinecraftClient.getInstance().execute {
+                        MinecraftClient.getInstance().networkHandler?.sendChatMessage("DIVINE INTERVENTION!!! ${target.uppercase()} HAS BEEN TURNED INTO THE TRUE EMBODIMENT OF ESTROGEN!!!!!")
+                    }
+                }
+                return ""
+            }
+            CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                MinecraftClient.getInstance().execute {
+                    MinecraftClient.getInstance().networkHandler?.sendChatMessage(responses.random())
+                }
+            }
+            return ""
         }
     }
 }
