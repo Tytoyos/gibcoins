@@ -29,11 +29,13 @@ object CommandManager {
 
     init {
         // Register commands here
+
+        //register(DelayTestCommand())
         register(ForcefemCommand())
         register(GambleKickCommand())
         register(PartyFunFact())
         register(ShitterCheck())
-        //register(DelayTestCommand())
+        register(KillCommand())
     }
 
     private fun register(cmd: PartyCommand) {

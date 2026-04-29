@@ -37,7 +37,7 @@ class GambleKickCommand : PartyCommand {
             return ""
         }
 
-        if (target.equals("JakeLegend", true)) {
+        if (target.lowercase() == "jakelegend") {
 
             CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
                 MinecraftClient.getInstance().execute {

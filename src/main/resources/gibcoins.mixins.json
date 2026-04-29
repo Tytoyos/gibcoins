@@ -3,7 +3,8 @@
 	"package": "com.github.tytoyos.gibcoins.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+		"ExampleMixin",
+		"RenderPlayerEvent"
 	],
 	"injectors": {
 		"defaultRequire": 1
