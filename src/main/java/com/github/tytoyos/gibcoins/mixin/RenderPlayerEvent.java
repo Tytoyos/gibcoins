@@ -1,5 +1,6 @@
 package com.github.tytoyos.gibcoins.mixin;
 
+import com.github.tytoyos.gibcoins.impl.HidePlayersConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -18,7 +19,9 @@ public abstract class RenderPlayerEvent {
     @Inject(method = "render*", at = @At("HEAD"), cancellable = true)
     private void onRender(LivingEntity entity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo info) {
 
-
+        if (!HidePlayersConfig.hidePlayers) {
+            return;
+        }
 
         MinecraftClient mc = MinecraftClient.getInstance();
         ClientPlayerEntity localPlayer = mc.player;

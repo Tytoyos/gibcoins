@@ -3,8 +3,10 @@ package com.github.tytoyos.gibcoins
 import impl.partycommands.CommandManager
 import commands.FunFactCommand
 import commands.HelpCommand
+import commands.HidePlayers
 import commands.TestPartyCommand
 import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import org.slf4j.LoggerFactory
 
@@ -14,6 +16,10 @@ object GibCoins : ClientModInitializer {
 		FunFactCommand().initialize()
 		TestPartyCommand().initialize()
 		HelpCommand().initialize()
+
+		ClientCommandRegistrationCallback.EVENT.register { dispatcher, _ ->
+			HidePlayers.register(dispatcher)
+		}
 
 		ClientReceiveMessageEvents.CHAT.register { message, _, _, _, _ ->
 			CommandManager.processIncomingChat(message.string)
