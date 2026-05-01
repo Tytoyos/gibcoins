@@ -1,7 +1,6 @@
 package impl.qol
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.minecraft.text.Text
 import utils.modMessage
 import kotlin.random.Random
 
@@ -22,9 +21,10 @@ object SystemNotifier {
         }
     }
     private fun roll() {
-        val name = listOf("Benjamin Netanyahu","Donald Trump", "Jeffrey Epstein")
+        val name = listOf("Benjamin Netanyahu","Donald Trump", "Jeffrey Epstein","")
+        val message = listOf("nice weather.", "feet :drool:")
         if (Random.nextDouble() < 1.0) {
-            modMessage(Text.literal("§c[§6ዞ§c] $name: nice weather."),"")
+            modMessage("§c[§6ዞ§c] ${name.random()}: ${message.random()}","")
         }
     }
 }
