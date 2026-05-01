@@ -27,7 +27,7 @@ class ShitterCheck : PartyCommand {
                 "Regocike? More like Shittercike!", "*redacted*",
                 "Definitely checkout this guy's hard drive.", "I don't know, ask moocwazy."
             )
-            val answerMoocwazy = "This player is very pro, trust frfr (not paid)."      //variable, so its expandable
+            val answerMeowcwazy = "This player is very pro, trust frfr (not paid)."      //variable, so its expandable
             val answerKaiine = "Kaiine is a good boy!! Not a shitter :3"                 //variable, so its expandable
 
             if (target.lowercase() == "regocike") {
@@ -40,11 +40,11 @@ class ShitterCheck : PartyCommand {
                 return ""
             }
 
-            if (target.lowercase() == "moocwazy") {
+            if (target.lowercase() == "meowcwazy") {
 
                 CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
                     MinecraftClient.getInstance().execute {
-                        MinecraftClient.getInstance().networkHandler?.sendChatMessage(answerMoocwazy)
+                        MinecraftClient.getInstance().networkHandler?.sendChatMessage(answerMeowcwazy)
                     }
                 }
                 return ""

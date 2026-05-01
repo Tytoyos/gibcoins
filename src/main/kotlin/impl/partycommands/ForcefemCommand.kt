@@ -31,7 +31,7 @@ class ForcefemCommand : PartyCommand {
                 return ""
             }
 
-            // add easter egg for moocwazy
+            // add easter egg for meowcwazy
 
             if ((1..20).random() == 5) {
 

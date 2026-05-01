@@ -9,7 +9,7 @@ class PartyFunFact : PartyCommand {
     override val name = "funfact"
 
     override fun execute(sender: String, args: List<String>): String {
-        val fact = listOf("Kaiine is everyone's pet ❤","The rift sucks.","About 35,82% of currently active players would lick Diana's toes.")
+        val fact = listOf("Kaiine is everyone's pet ❤","The rift sucks.","About 35,82% of currently active players would lick Diana's toes.","I'd do ANYTHING for 20m coins.","Meowcwazy was called Moocwazy at some point.")
 
         CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
             MinecraftClient.getInstance().execute {
