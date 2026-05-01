@@ -3,7 +3,6 @@ package com.github.tytoyos.gibcoins
 import impl.partycommands.CommandManager
 import commands.FunFactCommand
 import commands.HelpCommand
-import commands.NotifierDebugCommand
 import commands.TestPartyCommand
 import impl.qol.SystemNotifier
 import net.fabricmc.api.ClientModInitializer
