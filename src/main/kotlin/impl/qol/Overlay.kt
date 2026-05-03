@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier
 import kotlin.random.Random
 
 object Overlay {
-    private const val DISPLAY_DURATION_NANOS = 2_000_000_000L
+    private const val DISPLAY_DURATION_NANOS = 1_000_000_000L
     private var displayUntilNanos = 0L
     private var tickCounter = 0
     private var rollCD = 240000
