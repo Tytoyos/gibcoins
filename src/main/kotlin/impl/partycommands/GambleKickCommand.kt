@@ -13,7 +13,7 @@ class GambleKickCommand : PartyCommand {
             return "Usage: !gamblekick <player>"
         } else {
         val target = args[0]
-        val kickRoll = (1..4).random()
+        val kickRoll = (1..3).random()
         val playerName = MinecraftClient.getInstance().session.username
         val selfKick = (1..7).random()
 

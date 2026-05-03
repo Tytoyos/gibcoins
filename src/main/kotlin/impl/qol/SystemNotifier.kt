@@ -1,12 +1,13 @@
 package impl.qol
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.minecraft.client.MinecraftClient
 import utils.modMessage
 import kotlin.random.Random
 
 object SystemNotifier {
     private var tickCounter = 0
-    private var rollCD = 2400 //20 Minutes between each roll, aka 24000 Ticks.
+    private var rollCD = 24000 //20 Minutes between each roll, aka 24000 Ticks.
 
     fun register() {
         ClientTickEvents.END_CLIENT_TICK.register { client ->
@@ -21,10 +22,13 @@ object SystemNotifier {
         }
     }
     private fun roll() {
-        val name = listOf("Benjamin Netanyahu","Donald Trump", "Jeffrey Epstein","")
-        val message = listOf("nice weather.", "feet :drool:")
-        if (Random.nextDouble() < 1.0) {
-            modMessage("§c[§6ዞ§c] ${name.random()}: ${message.random()}","")
+        val name = listOf("§c[§6ዞ§c] Benjamin Netanyahu","§c[§6ዞ§c] Donald Trump", "§c[§6ዞ§c] Jeffrey Epstein", "§c[§6ዞ§c] Hypixel")
+        val playerName = MinecraftClient.getInstance().session.username
+        val message = listOf("nice weather.", "feet :drool:", "$playerName seems kinda gay...", "yea you're getting banned, $playerName.")
+
+
+        if (Random.nextDouble() < 0.25) {
+            modMessage("§f${name.random()}: ${message.random()}","")
         }
     }
 }

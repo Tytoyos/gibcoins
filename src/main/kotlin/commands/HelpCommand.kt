@@ -14,11 +14,12 @@ class HelpCommand : BaseCommand() {
         dispatcher.register(
             ClientCommandManager.literal("gchelp")
                 .executes { context ->
-                    context.source.sendFeedback(Text.literal("List of Party Commands: \n" +
-                            "!forcefem <name>  -> forcefully feminizes a player. \n" +
-                            "!gamblekick <name> -> has a 25% chance to kick the target. \n" +
-                            "!shittercheck <name> -> checks if the player is a shitter. \n" +
-                            "!funfact -> sends a fun fact."))
+                    context.source.sendFeedback(Text.literal("§cList of Party Commands: \n" +
+                            "§6!forcefem <name>  -> forcefully feminizes a player. \n" +
+                            "§e!gamblekick <name> -> has a 33.33% chance to kick the target. \n" +
+                            "§2!shittercheck <name> -> checks if the player is a shitter. \n" +
+                            "§9!funfact -> sends a fun fact. \n" +
+                            "§5!kill <name> -> will take care of your annoying party members..."))
                     1
                 }
         )
