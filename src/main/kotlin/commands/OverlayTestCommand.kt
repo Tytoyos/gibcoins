@@ -12,7 +12,7 @@ class OverlayTestCommand : BaseCommand() {
         registryAccess: CommandRegistryAccess
     ) {
         dispatcher.register(
-            ClientCommandManager.literal("show")
+            ClientCommandManager.literal("overlay")
                 .executes {
                     Overlay.show()
                     1})

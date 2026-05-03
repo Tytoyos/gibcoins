@@ -3,6 +3,7 @@ package com.github.tytoyos.gibcoins
 import impl.partycommands.CommandManager
 import commands.FunFactCommand
 import commands.HelpCommand
+import commands.HidePlayersCommand
 import commands.OverlayTestCommand
 import commands.RollCommand
 import commands.TestPartyCommand
@@ -17,6 +18,7 @@ object GibCoins : ClientModInitializer {
 	override fun onInitializeClient() {
 		FunFactCommand().initialize()
 		HelpCommand().initialize()
+		HidePlayersCommand().initialize()
 		Overlay.register()
 		OverlayTestCommand().initialize()
 		RollCommand().initialize()
