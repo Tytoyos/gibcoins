@@ -66,7 +66,7 @@ object Overlay {
     }
 
     fun show() {
-        if (Random.nextDouble() < 1)
+        if (Random.nextDouble() < 0.1)
         displayUntilNanos = System.nanoTime() + DISPLAY_DURATION_NANOS
     }
 }

@@ -47,8 +47,7 @@ object SystemNotifier {
     fun roll() {
         val name = listOf("§c[§6ዞ§c] Benjamin Netanyahu","§c[§6ዞ§c] Donald Trump", "§c[§6ዞ§c] Jeffrey Epstein", "§c[§6ዞ§c] Hypixel", "§b[MVP§a+§b] Cata50GodLovesM7")
         val playerName = MinecraftClient.getInstance().session.username
-        val message = listOf("nice weather.", "feet :drool:", "$playerName seems kinda gay...", "yea you're getting banned, $playerName.","$playerName could use some estrogen.")
-
+        val message = listOf("nice weather.", "feet :drool:", "$playerName seems kinda gay...", "yea you're getting banned, $playerName.", "$playerName could use some estrogen.", "ban JakeLegend")
 
         if (Random.nextDouble() < 0.5) {
             modMessage("${name.random()}§f: ${message.random()}","")
