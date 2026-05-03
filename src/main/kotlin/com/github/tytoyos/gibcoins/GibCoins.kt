@@ -3,6 +3,7 @@ package com.github.tytoyos.gibcoins
 import impl.partycommands.CommandManager
 import commands.FunFactCommand
 import commands.HelpCommand
+import commands.RollCommand
 import commands.TestPartyCommand
 import impl.qol.SystemNotifier
 import net.fabricmc.api.ClientModInitializer
@@ -16,6 +17,7 @@ object GibCoins : ClientModInitializer {
 		TestPartyCommand().initialize()
 		HelpCommand().initialize()
 		SystemNotifier.register()
+		RollCommand().initialize()
 
 		ClientReceiveMessageEvents.CHAT.register { message, _, _, _, _ ->
 			CommandManager.processIncomingChat(message.string)
