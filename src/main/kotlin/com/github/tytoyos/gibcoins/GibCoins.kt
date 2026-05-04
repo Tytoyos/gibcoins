@@ -1,6 +1,7 @@
 package com.github.tytoyos.gibcoins
 
 import impl.partycommands.CommandManager
+import clickgui.ClickGuiCommand
 import commands.FunFactCommand
 import commands.HelpCommand
 import commands.HidePlayersCommand
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory
 object GibCoins : ClientModInitializer {
 	private val logger = LoggerFactory.getLogger("gibcoins")
 	override fun onInitializeClient() {
+		ClickGuiCommand().initialize()
 		FunFactCommand().initialize()
 		HelpCommand().initialize()
 		HidePlayersCommand().initialize()

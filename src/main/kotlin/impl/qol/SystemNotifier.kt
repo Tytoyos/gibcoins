@@ -16,6 +16,7 @@ object SystemNotifier {
 
     private val stateDir: Path = FabricLoader.getInstance().configDir.resolve("gibcoins")
 
+    private var enabled = true
     private var tickCounter = 0
     private var loadedUserKey: String? = null
     private var ticksSinceLastSave = 0
@@ -29,7 +30,7 @@ object SystemNotifier {
             tickCounter++
             ticksSinceLastSave++
 
-            if (tickCounter >= ROLL_CD) {
+            if (enabled && tickCounter >= ROLL_CD) {
                 tickCounter = 0
                 roll()
             }
@@ -53,6 +54,13 @@ object SystemNotifier {
             modMessage("${name.random()}§f: ${message.random()}","")
         }
     }
+
+    fun toggleEnabled(): Boolean {
+        enabled = !enabled
+        return enabled
+    }
+
+    fun isEnabled(): Boolean = enabled
 
     private fun ensureStateLoaded(client: MinecraftClient) {
         val userKey = sanitizeUserKey(client.session.username)

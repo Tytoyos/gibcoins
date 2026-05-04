@@ -12,6 +12,7 @@ object Overlay {
     private var displayUntilNanos = 0L
     private var tickCounter = 0
     private var rollCD = 240000
+    private var enabled = true
 
     fun register() {
         HudElementRegistry.attachElementAfter(
@@ -60,13 +61,26 @@ object Overlay {
 
             if (tickCounter >= rollCD) {
                 tickCounter = 0
-                show()
+                if (enabled) {
+                    showRandom()
+                }
             }
         }
     }
 
     fun show() {
-        if (Random.nextDouble() < 0.1)
         displayUntilNanos = System.nanoTime() + DISPLAY_DURATION_NANOS
     }
+
+    fun showRandom() {
+        if (Random.nextDouble() < 0.1)
+            show()
+    }
+
+    fun toggleEnabled(): Boolean {
+        enabled = !enabled
+        return enabled
+    }
+
+    fun isEnabled(): Boolean = enabled
 }
