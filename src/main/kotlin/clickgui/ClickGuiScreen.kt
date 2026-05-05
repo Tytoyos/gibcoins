@@ -11,10 +11,17 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.lwjgl.glfw.GLFW
 import utils.modMessage
+import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
 
 class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
+    private data class ActiveSlider(
+        val categoryIndex: Int,
+        val featureIndex: Int,
+        val sliderIndex: Int
+    )
+
     private data class TooltipData(
         val text: String,
         val anchorX: Int,
@@ -38,7 +45,8 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
 
     private enum class RowType {
         FEATURE,
-        SETTING_TOGGLE
+        SETTING_TOGGLE,
+        SETTING_SLIDER
     }
 
     private val categories = mutableListOf(
@@ -51,9 +59,20 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     status = { enabledLabel(NearbyPlayerHider.isEnabled()) },
                     settings = {
                         listOf(
-                            "State" to enabledLabel(NearbyPlayerHider.isEnabled()),
-                            "Mode" to "Toggle",
-                            "Hint" to "Left click to toggle"
+
+                        )
+                    },
+                    sliders = {
+                        listOf(
+                            ClickSliderSetting(
+                                name = "Distance",
+                                min = NearbyPlayerHider.getMinHideDistance(),
+                                max = NearbyPlayerHider.getMaxHideDistance(),
+                                step = 0.1,
+                                value = { NearbyPlayerHider.getHideDistance() },
+                                onChange = NearbyPlayerHider::setHideDistance,
+                                formatter = { value -> String.format(Locale.US, "%.1f", value) }
+                            )
                         )
                     },
                     onClick = {
@@ -65,13 +84,6 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     name = "Random Overlay",
                     description = "Left click toggles the timed overlay roll that runs in the background.",
                     status = { enabledLabel(Overlay.isEnabled()) },
-                    settings = {
-                        listOf(
-                            "State" to enabledLabel(Overlay.isEnabled()),
-                            "Mode" to "Toggle",
-                            "Hint" to "Left click to toggle"
-                        )
-                    },
                     onClick = {
                         val enabled = Overlay.toggleEnabled()
                         modMessage("Random Overlay: ${enabledLabel(enabled)}")
@@ -81,13 +93,6 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     name = "System Notifier",
                     description = "Left click toggles periodic fake system notifier chat messages.",
                     status = { enabledLabel(SystemNotifier.isEnabled()) },
-                    settings = {
-                        listOf(
-                            "State" to enabledLabel(SystemNotifier.isEnabled()),
-                            "Mode" to "Toggle",
-                            "Hint" to "Left click to toggle"
-                        )
-                    },
                     onClick = {
                         val enabled = SystemNotifier.toggleEnabled()
                         modMessage("System Notifier: ${enabledLabel(enabled)}")
@@ -136,6 +141,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
     private var searchQuery = ""
     private val scrollOffsets = MutableList(categories.size) { 0 }
     private var tooltip: TooltipData? = null
+    private var activeSlider: ActiveSlider? = null
 
     private val categoryWidth = 240
     private val categoryGap = 10
@@ -146,6 +152,9 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
     private val rowSpacing = 0
     private val settingInset = 8
     private val columnRightPadding = 10
+    private val sliderTrackWidth = 92
+    private val sliderTrackHeight = 6
+    private val sliderKnobSize = 10
     private val searchWidth = 350
     private val searchHeight = 40
     private val accentColor = 0xFFF59CBA.toInt()
@@ -220,7 +229,41 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     super.mouseClicked(click, doubled)
                 }
             }
+
+            RowType.SETTING_SLIDER -> {
+                if (button != 0) {
+                    return super.mouseClicked(click, doubled)
+                }
+
+                updateSliderValue(clickedRow, click.x())
+                activeSlider = ActiveSlider(clickedRow.categoryIndex, clickedRow.featureIndex, clickedRow.settingIndex)
+                true
+            }
         }
+    }
+
+    override fun mouseDragged(click: Click, offsetX: Double, offsetY: Double): Boolean {
+        val slider = activeSlider ?: return super.mouseDragged(click, offsetX, offsetY)
+        if (click.button() != 0) {
+            return super.mouseDragged(click, offsetX, offsetY)
+        }
+
+        val row = rowBounds.lastOrNull {
+            it.type == RowType.SETTING_SLIDER &&
+                it.categoryIndex == slider.categoryIndex &&
+                it.featureIndex == slider.featureIndex &&
+                it.settingIndex == slider.sliderIndex
+        } ?: return true
+
+        updateSliderValue(row, click.x())
+        return true
+    }
+
+    override fun mouseReleased(click: Click): Boolean {
+        if (click.button() == 0) {
+            activeSlider = null
+        }
+        return super.mouseReleased(click)
     }
 
     override fun keyPressed(input: KeyInput): Boolean {
@@ -301,7 +344,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             else -> 0xFF242424.toInt()
         }
         val indicator = if (feature.expanded) "v" else ">"
-        val hasDetails = feature.settings().isNotEmpty() || feature.description.isNotBlank()
+        val hasDetails = feature.settings().isNotEmpty() || feature.sliders().isNotEmpty() || feature.description.isNotBlank()
         val labelWidth = textRenderer.getWidth(feature.name)
         val statusWidth = textRenderer.getWidth(statusText)
 
@@ -365,6 +408,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             }
             addAll(feature.settings())
         }
+        val sliders = feature.sliders()
         var currentY = y
 
         rows.forEachIndexed { settingIndex, (label, value) ->
@@ -393,6 +437,55 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     0xFFBFBFBF.toInt()
                 )
             }
+
+            currentY += settingHeight
+        }
+
+        sliders.forEachIndexed { sliderIndex, slider ->
+            context.fill(x, currentY, x + boxWidth, currentY + settingHeight, 0xA5141414.toInt())
+
+            val labelX = x + 6
+            val labelY = currentY + settingHeight / 2 - 8
+            val valueText = slider.formatter(slider.value())
+            val valueWidth = textRenderer.getWidth(valueText)
+            context.drawTextWithShadow(textRenderer, Text.literal(slider.name), labelX, labelY, 0xFFFFFFFF.toInt())
+            context.drawTextWithShadow(
+                textRenderer,
+                Text.literal(valueText),
+                x + boxWidth - valueWidth - 8,
+                labelY,
+                0xFFBFBFBF.toInt()
+            )
+
+            val trackX = x + boxWidth - sliderTrackWidth - valueWidth - 18
+            val trackY = currentY + settingHeight / 2 - sliderTrackHeight / 2
+            val clampedValue = slider.value().coerceIn(slider.min, slider.max)
+            val progress = ((clampedValue - slider.min) / (slider.max - slider.min)).toFloat()
+            val fillWidth = (sliderTrackWidth * progress).toInt()
+
+            context.fill(trackX, trackY, trackX + sliderTrackWidth, trackY + sliderTrackHeight, 0xFF262626.toInt())
+            if (fillWidth > 0) {
+                context.fill(trackX, trackY, trackX + fillWidth, trackY + sliderTrackHeight, accentColor)
+            }
+            drawBorder(context, trackX, trackY, sliderTrackWidth, sliderTrackHeight, 0xAA2E2E2E.toInt())
+
+            val knobX = (trackX + (sliderTrackWidth - sliderKnobSize) * progress).toInt()
+            val knobY = currentY + settingHeight / 2 - sliderKnobSize / 2
+            context.fill(knobX, knobY, knobX + sliderKnobSize, knobY + sliderKnobSize, 0xFFFFFFFF.toInt())
+            drawBorder(context, knobX, knobY, sliderKnobSize, sliderKnobSize, 0xAA2E2E2E.toInt())
+
+            addRowBoundsIfVisible(
+                RowType.SETTING_SLIDER,
+                categoryIndex,
+                featureIndex,
+                sliderIndex,
+                trackX,
+                knobY,
+                sliderTrackWidth,
+                sliderKnobSize,
+                clipTop,
+                clipBottom
+            )
 
             currentY += settingHeight
         }
@@ -437,6 +530,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             total += featureHeight + rowSpacing
             if (feature.expanded) {
                 total += settingRows(feature).size * settingHeight
+                total += feature.sliders().size * settingHeight
                 total += rowSpacing
             }
         }
@@ -467,6 +561,20 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             add("Enabled" to statusText)
         }
         addAll(feature.settings())
+    }
+
+    private fun updateSliderValue(row: RowBounds, mouseX: Double) {
+        val feature = categories[row.categoryIndex].features[row.featureIndex]
+        val slider = feature.sliders().getOrNull(row.settingIndex) ?: return
+        val progress = ((mouseX - row.x) / row.width).coerceIn(0.0, 1.0)
+        val rawValue = slider.min + (slider.max - slider.min) * progress
+        val snappedValue = if (slider.step > 0.0) {
+            val steps = kotlin.math.round((rawValue - slider.min) / slider.step).toInt()
+            slider.min + steps * slider.step
+        } else {
+            rawValue
+        }.coerceIn(slider.min, slider.max)
+        slider.onChange(snappedValue)
     }
 
     private fun drawTooltip(context: DrawContext) {
