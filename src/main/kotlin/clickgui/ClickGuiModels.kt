@@ -1,5 +1,11 @@
 package clickgui
 
+data class ClickToggleSetting(
+    val name: String,
+    val enabled: () -> Boolean,
+    val onToggle: () -> Unit
+)
+
 data class ClickSliderSetting(
     val name: String,
     val min: Double,
@@ -21,6 +27,7 @@ data class ClickFeature(
     val description: String,
     val status: (() -> String)? = null,
     val settings: (() -> List<Pair<String, String>>) = { emptyList() },
+    val toggleSettings: (() -> List<ClickToggleSetting>) = { emptyList() },
     val sliders: (() -> List<ClickSliderSetting>) = { emptyList() },
     val onClick: () -> Unit = {},
     var expanded: Boolean = false

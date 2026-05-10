@@ -15,15 +15,15 @@ class HidePlayersCommand : BaseCommand() {
         dispatcher.register(
             ClientCommandManager.literal("hideplayers")
                 .executes {
-                    val enabled = NearbyPlayerHider.toggle()
-                    modMessage("Hide Players: ${if (enabled) "enabled" else "disabled"}")
+                    val enabled = NearbyPlayerHider.toggleEnabled()
+                    modMessage("Player Hider: ${if (enabled) "enabled" else "disabled"}")
                     1
                 }
                 .then(
                     ClientCommandManager.literal("on")
                         .executes {
                             NearbyPlayerHider.setEnabled(true)
-                            modMessage("Hide Players: enabled")
+                            modMessage("Player Hider: enabled")
                             1
                         }
                 )
@@ -31,7 +31,7 @@ class HidePlayersCommand : BaseCommand() {
                     ClientCommandManager.literal("off")
                         .executes {
                             NearbyPlayerHider.setEnabled(false)
-                            modMessage("Hide Players: disabled")
+                            modMessage("Player Hider: disabled")
                             1
                         }
                 )

@@ -1,5 +1,6 @@
 package impl.qol
 
+import clickgui.GibCoinsConfig
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
@@ -61,7 +62,7 @@ object Overlay {
 
             if (tickCounter >= rollCD) {
                 tickCounter = 0
-                if (enabled) {
+                if (enabled && SchizoSim.isEnabled()) {
                     showRandom()
                 }
             }
@@ -79,7 +80,13 @@ object Overlay {
 
     fun toggleEnabled(): Boolean {
         enabled = !enabled
+        GibCoinsConfig.save()
         return enabled
+    }
+
+    fun setEnabled(value: Boolean) {
+        enabled = value
+        GibCoinsConfig.save()
     }
 
     fun isEnabled(): Boolean = enabled

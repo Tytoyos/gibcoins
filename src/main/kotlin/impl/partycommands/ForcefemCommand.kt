@@ -32,6 +32,17 @@ class ForcefemCommand : PartyCommand {
                 return ""
             }
 
+            val responsesRiley = listOf("...wait a second.", "Felt like switching up my game and turned CatgirlRiley into a MAN instead!!")
+
+            if (target.lowercase() == "catgirlriley" && femRoll == 5) {
+                CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
+                    MinecraftClient.getInstance().execute {
+                        MinecraftClient.getInstance().networkHandler?.sendChatMessage(responsesRiley.random())
+                    }
+                }
+                return ""
+            }
+
             val responsesMeowcwazy = listOf("Meow.", "Putting cat ears and a tail plug on meowcwazy.")
 
             if (target.lowercase() == "meowcwazy" && femRoll == 5) {

@@ -8,6 +8,7 @@ import commands.HidePlayersCommand
 import commands.OverlayTestCommand
 import commands.RollCommand
 import commands.TestPartyCommand
+import clickgui.GibCoinsConfig
 import impl.qol.Overlay
 import impl.qol.SystemNotifier
 import net.fabricmc.api.ClientModInitializer
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory
 object GibCoins : ClientModInitializer {
 	private val logger = LoggerFactory.getLogger("gibcoins")
 	override fun onInitializeClient() {
+		GibCoinsConfig.load()
 		ClickGuiCommand().initialize()
 		FunFactCommand().initialize()
 		HelpCommand().initialize()

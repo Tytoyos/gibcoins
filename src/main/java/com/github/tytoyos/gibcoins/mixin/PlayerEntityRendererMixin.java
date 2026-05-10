@@ -20,21 +20,21 @@ public class PlayerEntityRendererMixin {
 		float tickDelta,
 		CallbackInfo ci
 	) {
-		if (!NearbyPlayerHider.isEnabled()) {
-			return;
-		}
-
 		MinecraftClient client = MinecraftClient.getInstance();
 		ClientPlayerEntity localPlayer = client.player;
 
-		if (localPlayer == null || renderedPlayer == localPlayer) {
+		if (!NearbyPlayerHider.shouldHide(localPlayer, renderedPlayer, renderState.x, renderState.y, renderState.z)) {
 			return;
 		}
 
-		if (localPlayer.squaredDistanceTo(renderState.x, renderState.y, renderState.z) <= NearbyPlayerHider.getHideDistanceSquared()) {
-			renderState.invisible = true;
-			renderState.invisibleToPlayer = true;
-			renderState.displayName = null;
-		}
+		renderState.invisible = true;
+		renderState.invisibleToPlayer = !NearbyPlayerHider.shouldRenderAsGhost(
+			localPlayer,
+			renderedPlayer,
+			renderState.x,
+			renderState.y,
+			renderState.z
+		);
+		renderState.displayName = null;
 	}
 }

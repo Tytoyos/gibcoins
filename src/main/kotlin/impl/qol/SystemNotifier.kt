@@ -1,5 +1,6 @@
 package impl.qol
 
+import clickgui.GibCoinsConfig
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.loader.api.FabricLoader
@@ -30,7 +31,7 @@ object SystemNotifier {
             tickCounter++
             ticksSinceLastSave++
 
-            if (enabled && tickCounter >= ROLL_CD) {
+            if (enabled && SchizoSim.isEnabled() && tickCounter >= ROLL_CD) {
                 tickCounter = 0
                 roll()
             }
@@ -57,7 +58,13 @@ object SystemNotifier {
 
     fun toggleEnabled(): Boolean {
         enabled = !enabled
+        GibCoinsConfig.save()
         return enabled
+    }
+
+    fun setEnabled(value: Boolean) {
+        enabled = value
+        GibCoinsConfig.save()
     }
 
     fun isEnabled(): Boolean = enabled

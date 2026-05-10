@@ -2,6 +2,7 @@ package clickgui
 
 import impl.qol.NearbyPlayerHider
 import impl.qol.Overlay
+import impl.qol.SchizoSim
 import impl.qol.SystemNotifier
 import net.minecraft.client.gui.Click
 import net.minecraft.client.gui.DrawContext
@@ -54,12 +55,43 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             name = "qol",
             features = listOf(
                 ClickFeature(
-                    name = "Hide Players",
-                    description = "Hides close players.",
+                    name = "Player Hider",
+                    description = "Configure nearby player hiding and click-through behavior.",
                     status = { enabledLabel(NearbyPlayerHider.isEnabled()) },
-                    settings = {
+                    toggleSettings = {
                         listOf(
-
+                            ClickToggleSetting(
+                                name = "Hide Players",
+                                enabled = { NearbyPlayerHider.isRenderHidingEnabled() },
+                                onToggle = {
+                                    val enabled = NearbyPlayerHider.toggleRenderHiding()
+                                    modMessage("Hide Players: ${enabledLabel(enabled)}")
+                                }
+                            ),
+                            ClickToggleSetting(
+                                name = "Hide All",
+                                enabled = { NearbyPlayerHider.isHideAllEnabled() },
+                                onToggle = {
+                                    val enabled = NearbyPlayerHider.toggleHideAll()
+                                    modMessage("Hide All: ${enabledLabel(enabled)}")
+                                }
+                            ),
+                            ClickToggleSetting(
+                                name = "Ghost Mode",
+                                enabled = { NearbyPlayerHider.isGhostModeEnabled() },
+                                onToggle = {
+                                    val enabled = NearbyPlayerHider.toggleGhostMode()
+                                    modMessage("Ghost Mode: ${enabledLabel(enabled)}")
+                                }
+                            ),
+                            ClickToggleSetting(
+                                name = "Click Through Players",
+                                enabled = { NearbyPlayerHider.isClickThroughEnabled() },
+                                onToggle = {
+                                    val enabled = NearbyPlayerHider.toggleClickThrough()
+                                    modMessage("Click Through Players: ${enabledLabel(enabled)}")
+                                }
+                            )
                         )
                     },
                     sliders = {
@@ -76,26 +108,37 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                         )
                     },
                     onClick = {
-                        val enabled = NearbyPlayerHider.toggle()
-                        modMessage("Hide Players: ${enabledLabel(enabled)}")
+                        val enabled = NearbyPlayerHider.toggleEnabled()
+                        modMessage("Player Hider: ${enabledLabel(enabled)}")
                     }
                 ),
                 ClickFeature(
-                    name = "Random Overlay",
-                    description = "Left click toggles the timed overlay roll that runs in the background.",
-                    status = { enabledLabel(Overlay.isEnabled()) },
+                    name = "Schizo Sim",
+                    description = "Combined controls for the random overlay and system notifier.",
+                    status = { enabledLabel(SchizoSim.isEnabled()) },
+                    toggleSettings = {
+                        listOf(
+                            ClickToggleSetting(
+                                name = "Random Overlay",
+                                enabled = { Overlay.isEnabled() },
+                                onToggle = {
+                                    val enabled = Overlay.toggleEnabled()
+                                    modMessage("Random Overlay: ${enabledLabel(enabled)}")
+                                }
+                            ),
+                            ClickToggleSetting(
+                                name = "System Notifier",
+                                enabled = { SystemNotifier.isEnabled() },
+                                onToggle = {
+                                    val enabled = SystemNotifier.toggleEnabled()
+                                    modMessage("System Notifier: ${enabledLabel(enabled)}")
+                                }
+                            )
+                        )
+                    },
                     onClick = {
-                        val enabled = Overlay.toggleEnabled()
-                        modMessage("Random Overlay: ${enabledLabel(enabled)}")
-                    }
-                ),
-                ClickFeature(
-                    name = "System Notifier",
-                    description = "Left click toggles periodic fake system notifier chat messages.",
-                    status = { enabledLabel(SystemNotifier.isEnabled()) },
-                    onClick = {
-                        val enabled = SystemNotifier.toggleEnabled()
-                        modMessage("System Notifier: ${enabledLabel(enabled)}")
+                        val enabled = SchizoSim.toggleEnabled()
+                        modMessage("Schizo Sim: ${enabledLabel(enabled)}")
                     }
                 )
             )
@@ -212,7 +255,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                 if (button == 0) {
                     feature.onClick()
                     true
-                } else if (button == 1) {
+                } else if (button == 1 && hasExpandableSettings(feature)) {
                     feature.expanded = !feature.expanded
                     true
                 } else {
@@ -222,8 +265,9 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
 
             RowType.SETTING_TOGGLE -> {
                 val feature = categories[clickedRow.categoryIndex].features[clickedRow.featureIndex]
+                val toggleSetting = feature.toggleSettings().getOrNull(clickedRow.settingIndex)
                 if (button == 0) {
-                    feature.onClick()
+                    toggleSetting?.onToggle?.invoke()
                     true
                 } else {
                     super.mouseClicked(click, doubled)
@@ -344,7 +388,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             else -> 0xFF242424.toInt()
         }
         val indicator = if (feature.expanded) "v" else ">"
-        val hasDetails = feature.settings().isNotEmpty() || feature.sliders().isNotEmpty() || feature.description.isNotBlank()
+        val hasDetails = hasExpandableSettings(feature)
         val labelWidth = textRenderer.getWidth(feature.name)
         val statusWidth = textRenderer.getWidth(statusText)
 
@@ -401,43 +445,43 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
         clipBottom: Int
     ): Int {
         val boxWidth = categoryWidth - panelPadding * 2 - columnRightPadding - settingInset
-        val rows = buildList {
-            val statusText = feature.status?.invoke().orEmpty()
-            if (statusText == "ON" || statusText == "OFF") {
-                add("Enabled" to statusText)
-            }
-            addAll(feature.settings())
-        }
+        val toggleRows = feature.toggleSettings()
+        val infoRows = feature.settings()
         val sliders = feature.sliders()
         var currentY = y
 
-        rows.forEachIndexed { settingIndex, (label, value) ->
+        toggleRows.forEachIndexed { settingIndex, toggleRow ->
+            context.fill(x, currentY, x + boxWidth, currentY + settingHeight, 0xA5141414.toInt())
+            val labelX = x + 6
+            val labelY = currentY + settingHeight / 2 - 8
+            context.drawTextWithShadow(textRenderer, Text.literal(toggleRow.name), labelX, labelY, 0xFFFFFFFF.toInt())
+
+            val toggleX = x + boxWidth - 40
+            val toggleY = currentY + settingHeight / 2 - 10
+            val enabled = toggleRow.enabled()
+            val trackColor = if (enabled) accentColor else 0xFF262626.toInt()
+            val trackBorder = accentColor
+            context.fill(toggleX, toggleY, toggleX + 34, toggleY + 20, trackColor)
+            drawRoundedOutline(context, toggleX, toggleY, 34, 20, trackBorder)
+            val knobX = if (enabled) toggleX + 20 else toggleX + 4
+            context.fill(knobX, toggleY + 4, knobX + 12, toggleY + 16, 0xFFFFFFFF.toInt())
+            addRowBoundsIfVisible(RowType.SETTING_TOGGLE, categoryIndex, featureIndex, settingIndex, toggleX, toggleY, 34, 20, clipTop, clipBottom)
+
+            currentY += settingHeight
+        }
+
+        infoRows.forEach { (label, value) ->
             context.fill(x, currentY, x + boxWidth, currentY + settingHeight, 0xA5141414.toInt())
             val labelX = x + 6
             val labelY = currentY + settingHeight / 2 - 8
             context.drawTextWithShadow(textRenderer, Text.literal(label), labelX, labelY, 0xFFFFFFFF.toInt())
-
-            if (label == "Enabled" && (value == "ON" || value == "OFF")) {
-                val toggleX = x + boxWidth - 40
-                val toggleY = currentY + settingHeight / 2 - 10
-                val enabled = value == "ON"
-                val trackColor = if (enabled) accentColor else 0xFF262626.toInt()
-                val trackBorder = accentColor
-                context.fill(toggleX, toggleY, toggleX + 34, toggleY + 20, trackColor)
-                drawRoundedOutline(context, toggleX, toggleY, 34, 20, trackBorder)
-                val knobX = if (enabled) toggleX + 20 else toggleX + 4
-                context.fill(knobX, toggleY + 4, knobX + 12, toggleY + 16, 0xFFFFFFFF.toInt())
-                addRowBoundsIfVisible(RowType.SETTING_TOGGLE, categoryIndex, featureIndex, settingIndex, toggleX, toggleY, 34, 20, clipTop, clipBottom)
-            } else {
-                context.drawTextWithShadow(
-                    textRenderer,
-                    Text.literal(value),
-                    x + boxWidth - textRenderer.getWidth(value) - 8,
-                    labelY,
-                    0xFFBFBFBF.toInt()
-                )
-            }
-
+            context.drawTextWithShadow(
+                textRenderer,
+                Text.literal(value),
+                x + boxWidth - textRenderer.getWidth(value) - 8,
+                labelY,
+                0xFFBFBFBF.toInt()
+            )
             currentY += settingHeight
         }
 
@@ -529,7 +573,8 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             }
             total += featureHeight + rowSpacing
             if (feature.expanded) {
-                total += settingRows(feature).size * settingHeight
+                total += feature.toggleSettings().size * settingHeight
+                total += feature.settings().size * settingHeight
                 total += feature.sliders().size * settingHeight
                 total += rowSpacing
             }
@@ -553,14 +598,6 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             y + 14,
             color
         )
-    }
-
-    private fun settingRows(feature: ClickFeature): List<Pair<String, String>> = buildList {
-        val statusText = feature.status?.invoke().orEmpty()
-        if (statusText == "ON" || statusText == "OFF") {
-            add("Enabled" to statusText)
-        }
-        addAll(feature.settings())
     }
 
     private fun updateSliderValue(row: RowBounds, mouseX: Double) {
@@ -639,6 +676,10 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
 
     companion object {
         private fun enabledLabel(enabled: Boolean): String = if (enabled) "ON" else "OFF"
+    }
+
+    private fun hasExpandableSettings(feature: ClickFeature): Boolean {
+        return feature.toggleSettings().isNotEmpty() || feature.settings().isNotEmpty() || feature.sliders().isNotEmpty()
     }
 
     private fun rowIntersectsViewport(y: Int, height: Int, clipTop: Int, clipBottom: Int): Boolean {
