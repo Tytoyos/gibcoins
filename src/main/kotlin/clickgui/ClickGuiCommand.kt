@@ -12,7 +12,7 @@ class ClickGuiCommand : BaseCommand() {
         registryAccess: CommandRegistryAccess
     ) {
         dispatcher.register(
-            ClientCommandManager.literal("gc")
+            ClientCommandManager.literal("coin")
                 .executes { context ->
                     val client = context.source.client
                     client.execute {

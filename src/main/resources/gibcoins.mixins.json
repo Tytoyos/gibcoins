@@ -5,8 +5,13 @@
 	"mixins": [
 	],
 	"client": [
+		"ArmorFeatureRendererMixin",
 		"ClientPlayerEntityMixin",
-		"PlayerEntityRendererMixin"
+		"EquipmentRendererMixin",
+		"HeldItemFeatureRendererMixin",
+		"PlayerEntityRenderStateMixin",
+		"PlayerEntityRendererMixin",
+		"PlayerHeldItemFeatureRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

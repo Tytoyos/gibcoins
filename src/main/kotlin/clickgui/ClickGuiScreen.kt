@@ -106,7 +106,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                 ),
                 ClickFeature(
                     name = "Schizo Sim",
-                    description = "Combined controls for the random overlay and system notifier.",
+                    description = "Experience Schizophrenia.",
                     status = { enabledLabel(SchizoSim.isEnabled()) },
                     toggleSettings = {
                         listOf(

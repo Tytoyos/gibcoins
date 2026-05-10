@@ -20,6 +20,10 @@ public class PlayerEntityRendererMixin {
 		float tickDelta,
 		CallbackInfo ci
 	) {
+		PlayerHiderRenderStateExt hiderState = (PlayerHiderRenderStateExt) renderState;
+		hiderState.gibcoins$setPlayerHiderHidden(false);
+		hiderState.gibcoins$setPlayerHiderGhost(false);
+
 		MinecraftClient client = MinecraftClient.getInstance();
 		ClientPlayerEntity localPlayer = client.player;
 
@@ -27,14 +31,17 @@ public class PlayerEntityRendererMixin {
 			return;
 		}
 
-		renderState.invisible = true;
-		renderState.invisibleToPlayer = !NearbyPlayerHider.shouldRenderAsGhost(
+		boolean ghost = NearbyPlayerHider.shouldRenderAsGhost(
 			localPlayer,
 			renderedPlayer,
 			renderState.x,
 			renderState.y,
 			renderState.z
 		);
+		hiderState.gibcoins$setPlayerHiderHidden(true);
+		hiderState.gibcoins$setPlayerHiderGhost(ghost);
+		renderState.invisible = true;
+		renderState.invisibleToPlayer = !ghost;
 		renderState.displayName = null;
 	}
 }

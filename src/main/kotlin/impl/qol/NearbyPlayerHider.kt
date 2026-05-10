@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity
 object NearbyPlayerHider {
     private const val DEFAULT_HIDE_DISTANCE = 1.5
     private const val MIN_HIDE_DISTANCE = 0.5
-    private const val MAX_HIDE_DISTANCE = 6.0
+    private const val MAX_HIDE_DISTANCE = 10.0
 
     private var enabled = false
     private var renderHidingEnabled = false
