@@ -9,6 +9,8 @@ import commands.OverlayTestCommand
 import commands.RollCommand
 import commands.TestPartyCommand
 import clickgui.GibCoinsConfig
+import commands.TestInvProc
+import impl.qol.InvMeow
 import impl.qol.Overlay
 import impl.qol.SystemNotifier
 import net.fabricmc.api.ClientModInitializer
@@ -17,6 +19,12 @@ import org.slf4j.LoggerFactory
 
 object GibCoins : ClientModInitializer {
 	private val logger = LoggerFactory.getLogger("gibcoins")
+
+	fun handleIncomingChatLine(plainText: String) {
+		CommandManager.processIncomingChat(plainText)
+		InvMeow.meow(plainText)
+	}
+
 	override fun onInitializeClient() {
 		GibCoinsConfig.load()
 		ClickGuiCommand().initialize()
@@ -28,15 +36,15 @@ object GibCoins : ClientModInitializer {
 		RollCommand().initialize()
 		SystemNotifier.register()
 		TestPartyCommand().initialize()
-
+		TestInvProc().initialize()
 
 		ClientReceiveMessageEvents.CHAT.register { message, _, _, _, _ ->
-			CommandManager.processIncomingChat(message.string)
+			handleIncomingChatLine(message.string)
 		}
 
 		ClientReceiveMessageEvents.GAME.register { message, overlay ->
 			if (!overlay) {
-				CommandManager.processIncomingChat(message.string)
+				handleIncomingChatLine(message.string)
 			}
 		}
 

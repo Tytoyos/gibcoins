@@ -8,9 +8,9 @@ class DelayTestCommand : PartyCommand {
     override val name = "delaytest"
     override fun execute(sender: String, args: List<String>): String {
 
-        CompletableFuture.delayedExecutor(10000, TimeUnit.MILLISECONDS).execute {
+        CompletableFuture.delayedExecutor(1000, TimeUnit.MILLISECONDS).execute {
             MinecraftClient.getInstance().execute {
-                MinecraftClient.getInstance().networkHandler?.sendChatMessage("Kaiine smells")
+                MinecraftClient.getInstance().networkHandler?.sendChatMessage("test")
             }
         }
         return ""

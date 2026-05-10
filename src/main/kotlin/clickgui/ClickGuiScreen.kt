@@ -1,6 +1,7 @@
 package clickgui
 
 import impl.qol.NearbyPlayerHider
+import impl.qol.InvMeow
 import impl.qol.Overlay
 import impl.qol.SchizoSim
 import impl.qol.SystemNotifier
@@ -63,34 +64,22 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                             ClickToggleSetting(
                                 name = "Hide Players",
                                 enabled = { NearbyPlayerHider.isRenderHidingEnabled() },
-                                onToggle = {
-                                    val enabled = NearbyPlayerHider.toggleRenderHiding()
-                                    modMessage("Hide Players: ${enabledLabel(enabled)}")
-                                }
+                                onToggle = { NearbyPlayerHider.toggleRenderHiding() }
                             ),
                             ClickToggleSetting(
                                 name = "Hide All",
                                 enabled = { NearbyPlayerHider.isHideAllEnabled() },
-                                onToggle = {
-                                    val enabled = NearbyPlayerHider.toggleHideAll()
-                                    modMessage("Hide All: ${enabledLabel(enabled)}")
-                                }
+                                onToggle = { NearbyPlayerHider.toggleHideAll() }
                             ),
                             ClickToggleSetting(
                                 name = "Ghost Mode",
                                 enabled = { NearbyPlayerHider.isGhostModeEnabled() },
-                                onToggle = {
-                                    val enabled = NearbyPlayerHider.toggleGhostMode()
-                                    modMessage("Ghost Mode: ${enabledLabel(enabled)}")
-                                }
+                                onToggle = { NearbyPlayerHider.toggleGhostMode() }
                             ),
                             ClickToggleSetting(
                                 name = "Click Through Players",
                                 enabled = { NearbyPlayerHider.isClickThroughEnabled() },
-                                onToggle = {
-                                    val enabled = NearbyPlayerHider.toggleClickThrough()
-                                    modMessage("Click Through Players: ${enabledLabel(enabled)}")
-                                }
+                                onToggle = { NearbyPlayerHider.toggleClickThrough() }
                             )
                         )
                     },
@@ -107,10 +96,13 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                             )
                         )
                     },
-                    onClick = {
-                        val enabled = NearbyPlayerHider.toggleEnabled()
-                        modMessage("Player Hider: ${enabledLabel(enabled)}")
-                    }
+                    onClick = { NearbyPlayerHider.toggleEnabled() }
+                ),
+                ClickFeature(
+                    name = "InvMeow",
+                    description = "Plays cat sounds on invincibility proc.",
+                    status = { enabledLabel(InvMeow.isEnabled()) },
+                    onClick = { InvMeow.toggleEnabled() }
                 ),
                 ClickFeature(
                     name = "Schizo Sim",
@@ -121,25 +113,16 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                             ClickToggleSetting(
                                 name = "Random Overlay",
                                 enabled = { Overlay.isEnabled() },
-                                onToggle = {
-                                    val enabled = Overlay.toggleEnabled()
-                                    modMessage("Random Overlay: ${enabledLabel(enabled)}")
-                                }
+                                onToggle = { Overlay.toggleEnabled() }
                             ),
                             ClickToggleSetting(
                                 name = "System Notifier",
                                 enabled = { SystemNotifier.isEnabled() },
-                                onToggle = {
-                                    val enabled = SystemNotifier.toggleEnabled()
-                                    modMessage("System Notifier: ${enabledLabel(enabled)}")
-                                }
+                                onToggle = { SystemNotifier.toggleEnabled() }
                             )
                         )
                     },
-                    onClick = {
-                        val enabled = SchizoSim.toggleEnabled()
-                        modMessage("Schizo Sim: ${enabledLabel(enabled)}")
-                    }
+                    onClick = { SchizoSim.toggleEnabled() }
                 )
             )
         ),
