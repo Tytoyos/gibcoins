@@ -28,8 +28,6 @@ object CommandManager {
     }
 
     init {
-        // Register commands here
-
         //register(DelayTestCommand())
         register(ForcefemCommand())
         register(GambleKickCommand())
