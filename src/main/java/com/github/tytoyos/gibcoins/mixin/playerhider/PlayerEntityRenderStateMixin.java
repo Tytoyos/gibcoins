@@ -1,5 +1,6 @@
-package com.github.tytoyos.gibcoins.mixin;
+package com.github.tytoyos.gibcoins.mixin.playerhider;
 
+import com.github.tytoyos.gibcoins.playerhider.PlayerHiderRenderStateExt;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

@@ -1,5 +1,6 @@
-package com.github.tytoyos.gibcoins.mixin;
+package com.github.tytoyos.gibcoins.mixin.playerhider;
 
+import com.github.tytoyos.gibcoins.playerhider.NearbyPlayerHiderRenderContext;
 import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

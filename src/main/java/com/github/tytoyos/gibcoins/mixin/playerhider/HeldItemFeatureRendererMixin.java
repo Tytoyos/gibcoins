@@ -1,13 +1,17 @@
-package com.github.tytoyos.gibcoins.mixin;
+package com.github.tytoyos.gibcoins.mixin.playerhider;
 
+import com.github.tytoyos.gibcoins.playerhider.NearbyPlayerHiderRenderContext;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
 import net.minecraft.client.render.entity.state.ArmedEntityRenderState;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Arm;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HeldItemFeatureRenderer.class)
@@ -31,17 +35,36 @@ public class HeldItemFeatureRendererMixin {
 		}
 	}
 
-	@ModifyArg(
+	@Redirect(
 		method = "renderItem(Lnet/minecraft/client/render/entity/state/ArmedEntityRenderState;Lnet/minecraft/client/render/item/ItemRenderState;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/Arm;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;I)V",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/render/item/ItemRenderState;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;III)V"
-		),
-		index = 4
+		)
 	)
-	private int gibcoins$ghostHeldItems(int color, ArmedEntityRenderState renderState) {
-		return NearbyPlayerHiderRenderContext.isPlayerHiderGhost(renderState)
-			? NearbyPlayerHiderRenderContext.GHOST_COLOR
-			: color;
+	private void gibcoins$ghostHeldItems(
+		ItemRenderState itemRenderState,
+		MatrixStack matrices,
+		OrderedRenderCommandQueue queue,
+		int light,
+		int overlay,
+		int color,
+		ArmedEntityRenderState renderState,
+		ItemRenderState unusedItemState,
+		ItemStack stack,
+		Arm arm,
+		MatrixStack unusedMatrices,
+		OrderedRenderCommandQueue unusedQueue,
+		int unusedLight
+	) {
+		itemRenderState.render(
+			matrices,
+			queue,
+			light,
+			overlay,
+			NearbyPlayerHiderRenderContext.isPlayerHiderGhost(renderState)
+				? NearbyPlayerHiderRenderContext.GHOST_COLOR
+				: color
+		);
 	}
 }

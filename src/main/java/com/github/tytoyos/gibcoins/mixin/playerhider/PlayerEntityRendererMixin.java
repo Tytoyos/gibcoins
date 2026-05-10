@@ -1,5 +1,6 @@
-package com.github.tytoyos.gibcoins.mixin;
+package com.github.tytoyos.gibcoins.mixin.playerhider;
 
+import com.github.tytoyos.gibcoins.playerhider.PlayerHiderRenderStateExt;
 import impl.qol.NearbyPlayerHider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;

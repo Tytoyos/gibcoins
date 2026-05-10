@@ -1,4 +1,4 @@
-package com.github.tytoyos.gibcoins.mixin;
+package com.github.tytoyos.gibcoins.playerhider;
 
 public interface PlayerHiderRenderStateExt {
 	boolean gibcoins$isPlayerHiderHidden();
