@@ -57,14 +57,18 @@ public class HeldItemFeatureRendererMixin {
 		OrderedRenderCommandQueue unusedQueue,
 		int unusedLight
 	) {
-		itemRenderState.render(
-			matrices,
-			queue,
-			light,
-			overlay,
-			NearbyPlayerHiderRenderContext.isPlayerHiderGhost(renderState)
-				? NearbyPlayerHiderRenderContext.GHOST_COLOR
-				: color
-		);
+		boolean ghost = NearbyPlayerHiderRenderContext.isPlayerHiderGhost(renderState);
+		NearbyPlayerHiderRenderContext.setGhostItemRender(ghost);
+		try {
+			itemRenderState.render(
+				matrices,
+				queue,
+				light,
+				overlay,
+				color
+			);
+		} finally {
+			NearbyPlayerHiderRenderContext.setGhostItemRender(false);
+		}
 	}
 }

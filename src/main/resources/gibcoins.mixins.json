@@ -8,10 +8,16 @@
 		"playerhider.ArmorFeatureRendererMixin",
 		"playerhider.ClientPlayerEntityMixin",
 		"playerhider.EquipmentRendererMixin",
+		"playerhider.HeadFeatureRendererMixin",
 		"playerhider.HeldItemFeatureRendererMixin",
+		"playerhider.ItemCommandRendererMixin",
+		"playerhider.ItemRendererMixin",
+		"playerhider.ItemRenderStateLayerRenderStateMixin",
 		"playerhider.PlayerEntityRenderStateMixin",
 		"playerhider.PlayerEntityRendererMixin",
-      "playerhider.PlayerHeldItemFeatureRendererMixin"
+		"playerhider.PlayerHeadModelRendererMixin",
+		"playerhider.PlayerHeldItemFeatureRendererMixin",
+		"playerhider.SkullBlockEntityRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
