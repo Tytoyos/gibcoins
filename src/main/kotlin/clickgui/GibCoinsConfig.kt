@@ -39,12 +39,16 @@ object GibCoinsConfig {
             properties.getProperty("playerHider.clickThroughEnabled")?.toBooleanStrictOrNull()
                 ?: NearbyPlayerHider.isClickThroughEnabled()
         )
+        NearbyPlayerHider.setGhostOpacity(
+            properties.getProperty("playerHider.ghostOpacity")?.toDoubleOrNull() ?: NearbyPlayerHider.getGhostOpacity()
+        )
         NearbyPlayerHider.setHideDistance(
             properties.getProperty("playerHider.hideDistance")?.toDoubleOrNull() ?: NearbyPlayerHider.getHideDistance()
         )
 
         Overlay.setEnabled(properties.getProperty("overlay.enabled")?.toBooleanStrictOrNull() ?: Overlay.isEnabled())
         InvMeow.setEnabled(properties.getProperty("invMeow.enabled")?.toBooleanStrictOrNull() ?: InvMeow.isEnabled())
+        InvMeow.setVolume(properties.getProperty("invMeow.volume")?.toDoubleOrNull() ?: InvMeow.getVolume())
         SchizoSim.setEnabled(properties.getProperty("schizoSim.enabled")?.toBooleanStrictOrNull() ?: SchizoSim.isEnabled())
         SystemNotifier.setEnabled(
             properties.getProperty("systemNotifier.enabled")?.toBooleanStrictOrNull() ?: SystemNotifier.isEnabled()
@@ -60,9 +64,11 @@ object GibCoinsConfig {
             setProperty("playerHider.hideAllEnabled", NearbyPlayerHider.isHideAllEnabled().toString())
             setProperty("playerHider.ghostModeEnabled", NearbyPlayerHider.isGhostModeEnabled().toString())
             setProperty("playerHider.clickThroughEnabled", NearbyPlayerHider.isClickThroughEnabled().toString())
+            setProperty("playerHider.ghostOpacity", NearbyPlayerHider.getGhostOpacity().toString())
             setProperty("playerHider.hideDistance", NearbyPlayerHider.getHideDistance().toString())
             setProperty("overlay.enabled", Overlay.isEnabled().toString())
             setProperty("invMeow.enabled", InvMeow.isEnabled().toString())
+            setProperty("invMeow.volume", InvMeow.getVolume().toString())
             setProperty("schizoSim.enabled", SchizoSim.isEnabled().toString())
             setProperty("systemNotifier.enabled", SystemNotifier.isEnabled().toString())
         }

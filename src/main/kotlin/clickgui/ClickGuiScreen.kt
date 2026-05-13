@@ -86,6 +86,16 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     sliders = {
                         listOf(
                             ClickSliderSetting(
+                                name = "Opacity",
+                                min = NearbyPlayerHider.getMinGhostOpacity(),
+                                max = NearbyPlayerHider.getMaxGhostOpacity(),
+                                step = 1.0,
+                                value = { NearbyPlayerHider.getGhostOpacity() },
+                                onChange = NearbyPlayerHider::setGhostOpacity,
+                                formatter = { value -> "${value.toInt()}%" },
+                                insertAfterToggleName = "Ghost Mode"
+                            ),
+                            ClickSliderSetting(
                                 name = "Distance",
                                 min = NearbyPlayerHider.getMinHideDistance(),
                                 max = NearbyPlayerHider.getMaxHideDistance(),
@@ -102,6 +112,19 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     name = "InvMeow",
                     description = "Plays cat sounds on invincibility proc.",
                     status = { enabledLabel(InvMeow.isEnabled()) },
+                    sliders = {
+                        listOf(
+                            ClickSliderSetting(
+                                name = "Volume",
+                                min = InvMeow.getMinVolume(),
+                                max = InvMeow.getMaxVolume(),
+                                step = 0.2,
+                                value = { InvMeow.getVolume() },
+                                onChange = InvMeow::setVolume,
+                                formatter = { value -> String.format(Locale.US, "%.1f", value) }
+                            )
+                        )
+                    },
                     onClick = { InvMeow.toggleEnabled() }
                 ),
                 ClickFeature(
@@ -111,12 +134,12 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     toggleSettings = {
                         listOf(
                             ClickToggleSetting(
-                                name = "Random Overlay",
+                                name = "Jump Scare",
                                 enabled = { Overlay.isEnabled() },
                                 onToggle = { Overlay.toggleEnabled() }
                             ),
                             ClickToggleSetting(
-                                name = "System Notifier",
+                                name = "The Voices",
                                 enabled = { SystemNotifier.isEnabled() },
                                 onToggle = { SystemNotifier.toggleEnabled() }
                             )
@@ -145,8 +168,8 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     }
                 ),
                 ClickFeature(
-                    name = "Roll Notifier Now",
-                    description = "Left click performs one notifier roll immediately.",
+                    name = "Roll Now",
+                    description = "Left click performs one roll immediately.",
                     settings = {
                         listOf(
                             "Type" to "Action",
@@ -156,7 +179,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     },
                     onClick = {
                         SystemNotifier.roll()
-                        modMessage("System Notifier rolled once")
+                        modMessage("System rolled once")
                     }
                 )
             )
@@ -451,6 +474,23 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             addRowBoundsIfVisible(RowType.SETTING_TOGGLE, categoryIndex, featureIndex, settingIndex, toggleX, toggleY, 34, 20, clipTop, clipBottom)
 
             currentY += settingHeight
+
+            sliders.forEachIndexed { sliderIndex, slider ->
+                if (slider.insertAfterToggleName == toggleRow.name) {
+                    currentY = drawSliderRow(
+                        context,
+                        slider,
+                        categoryIndex,
+                        featureIndex,
+                        sliderIndex,
+                        x,
+                        currentY,
+                        boxWidth,
+                        clipTop,
+                        clipBottom
+                    )
+                }
+            }
         }
 
         infoRows.forEach { (label, value) ->
@@ -469,55 +509,87 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
         }
 
         sliders.forEachIndexed { sliderIndex, slider ->
-            context.fill(x, currentY, x + boxWidth, currentY + settingHeight, 0xA5141414.toInt())
-
-            val labelX = x + 6
-            val labelY = currentY + settingHeight / 2 - 8
-            val valueText = slider.formatter(slider.value())
-            val valueWidth = textRenderer.getWidth(valueText)
-            context.drawTextWithShadow(textRenderer, Text.literal(slider.name), labelX, labelY, 0xFFFFFFFF.toInt())
-            context.drawTextWithShadow(
-                textRenderer,
-                Text.literal(valueText),
-                x + boxWidth - valueWidth - 8,
-                labelY,
-                0xFFBFBFBF.toInt()
-            )
-
-            val trackX = x + boxWidth - sliderTrackWidth - valueWidth - 18
-            val trackY = currentY + settingHeight / 2 - sliderTrackHeight / 2
-            val clampedValue = slider.value().coerceIn(slider.min, slider.max)
-            val progress = ((clampedValue - slider.min) / (slider.max - slider.min)).toFloat()
-            val fillWidth = (sliderTrackWidth * progress).toInt()
-
-            context.fill(trackX, trackY, trackX + sliderTrackWidth, trackY + sliderTrackHeight, 0xFF262626.toInt())
-            if (fillWidth > 0) {
-                context.fill(trackX, trackY, trackX + fillWidth, trackY + sliderTrackHeight, accentColor)
+            if (slider.insertAfterToggleName == null) {
+                currentY = drawSliderRow(
+                    context,
+                    slider,
+                    categoryIndex,
+                    featureIndex,
+                    sliderIndex,
+                    x,
+                    currentY,
+                    boxWidth,
+                    clipTop,
+                    clipBottom
+                )
             }
-            drawBorder(context, trackX, trackY, sliderTrackWidth, sliderTrackHeight, 0xAA2E2E2E.toInt())
-
-            val knobX = (trackX + (sliderTrackWidth - sliderKnobSize) * progress).toInt()
-            val knobY = currentY + settingHeight / 2 - sliderKnobSize / 2
-            context.fill(knobX, knobY, knobX + sliderKnobSize, knobY + sliderKnobSize, 0xFFFFFFFF.toInt())
-            drawBorder(context, knobX, knobY, sliderKnobSize, sliderKnobSize, 0xAA2E2E2E.toInt())
-
-            addRowBoundsIfVisible(
-                RowType.SETTING_SLIDER,
-                categoryIndex,
-                featureIndex,
-                sliderIndex,
-                trackX,
-                knobY,
-                sliderTrackWidth,
-                sliderKnobSize,
-                clipTop,
-                clipBottom
-            )
-
-            currentY += settingHeight
         }
 
         return currentY + rowSpacing
+    }
+
+    private fun drawSliderRow(
+        context: DrawContext,
+        slider: ClickSliderSetting,
+        categoryIndex: Int,
+        featureIndex: Int,
+        sliderIndex: Int,
+        x: Int,
+        y: Int,
+        boxWidth: Int,
+        clipTop: Int,
+        clipBottom: Int
+    ): Int {
+        context.fill(x, y, x + boxWidth, y + settingHeight, 0xA5141414.toInt())
+
+        val labelX = x + 6
+        val labelY = y + settingHeight / 2 - 8
+        val valueText = slider.formatter(slider.value())
+        val valueWidth = textRenderer.getWidth(valueText)
+        context.drawTextWithShadow(textRenderer, Text.literal(slider.name), labelX, labelY, 0xFFFFFFFF.toInt())
+        context.drawTextWithShadow(
+            textRenderer,
+            Text.literal(valueText),
+            x + boxWidth - valueWidth - 8,
+            labelY,
+            0xFFBFBFBF.toInt()
+        )
+
+        val trackX = x + boxWidth - sliderTrackWidth - valueWidth - 18
+        val trackY = y + settingHeight / 2 - sliderTrackHeight / 2
+        val clampedValue = slider.value().coerceIn(slider.min, slider.max)
+        val progress = if (slider.max == slider.min) {
+            0.0f
+        } else {
+            ((clampedValue - slider.min) / (slider.max - slider.min)).toFloat()
+        }
+        val fillWidth = (sliderTrackWidth * progress).toInt()
+
+        context.fill(trackX, trackY, trackX + sliderTrackWidth, trackY + sliderTrackHeight, 0xFF262626.toInt())
+        if (fillWidth > 0) {
+            context.fill(trackX, trackY, trackX + fillWidth, trackY + sliderTrackHeight, accentColor)
+        }
+        drawBorder(context, trackX, trackY, sliderTrackWidth, sliderTrackHeight, 0xAA2E2E2E.toInt())
+
+        val knobX = (trackX + (sliderTrackWidth - sliderKnobSize) * progress).toInt()
+        val knobY = y + settingHeight / 2 - sliderKnobSize / 2
+        context.fill(knobX, knobY, knobX + sliderKnobSize, knobY + sliderKnobSize, 0xFFFFFFFF.toInt())
+        drawBorder(context, knobX, knobY, sliderKnobSize, sliderKnobSize, 0xAA2E2E2E.toInt())
+
+        addRowBoundsIfVisible(
+            RowType.SETTING_SLIDER,
+            categoryIndex,
+            featureIndex,
+            sliderIndex,
+            trackX,
+            knobY,
+            sliderTrackWidth,
+            sliderKnobSize,
+            clipTop,
+            clipBottom
+        )
+
+        return y + settingHeight
     }
 
     private fun drawCategoryRows(

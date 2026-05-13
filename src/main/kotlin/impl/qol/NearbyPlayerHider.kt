@@ -1,6 +1,7 @@
 package impl.qol
 
 import clickgui.GibCoinsConfig
+import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.Entity
 import net.minecraft.entity.PlayerLikeEntity
 import net.minecraft.entity.player.PlayerEntity
@@ -9,6 +10,9 @@ object NearbyPlayerHider {
     private const val DEFAULT_HIDE_DISTANCE = 1.5
     private const val MIN_HIDE_DISTANCE = 0.5
     private const val MAX_HIDE_DISTANCE = 10.0
+    private const val DEFAULT_GHOST_OPACITY = 15.0
+    private const val MIN_GHOST_OPACITY = 0.0
+    private const val MAX_GHOST_OPACITY = 100.0
 
     private var enabled = false
     private var renderHidingEnabled = false
@@ -16,6 +20,7 @@ object NearbyPlayerHider {
     private var ghostModeEnabled = false
     private var clickThroughEnabled = false
     private var hideDistance = DEFAULT_HIDE_DISTANCE
+    private var ghostOpacity = DEFAULT_GHOST_OPACITY
 
     @JvmStatic
     fun toggleEnabled(): Boolean {
@@ -82,6 +87,24 @@ object NearbyPlayerHider {
     fun isGhostModeEnabled(): Boolean = ghostModeEnabled
 
     @JvmStatic
+    fun setGhostOpacity(value: Double) {
+        ghostOpacity = value.coerceIn(MIN_GHOST_OPACITY, MAX_GHOST_OPACITY)
+        GibCoinsConfig.save()
+    }
+
+    @JvmStatic
+    fun getGhostOpacity(): Double = ghostOpacity
+
+    @JvmStatic
+    fun getMinGhostOpacity(): Double = MIN_GHOST_OPACITY
+
+    @JvmStatic
+    fun getMaxGhostOpacity(): Double = MAX_GHOST_OPACITY
+
+    @JvmStatic
+    fun getGhostOpacityAlpha(): Int = ((ghostOpacity / 100.0) * 255.0).toInt().coerceIn(0, 255)
+
+    @JvmStatic
     fun toggleClickThrough(): Boolean {
         clickThroughEnabled = !clickThroughEnabled
         GibCoinsConfig.save()
@@ -117,11 +140,17 @@ object NearbyPlayerHider {
 
     @JvmStatic
     fun shouldAffectPlayer(localPlayer: PlayerEntity?, otherPlayer: PlayerLikeEntity, x: Double, y: Double, z: Double): Boolean {
-        if (!enabled || localPlayer == null || otherPlayer == localPlayer) {
+        if (!enabled || localPlayer == null || otherPlayer == localPlayer || !npcCheck(otherPlayer)) {
             return false
         }
 
         return hideAllEnabled || localPlayer.squaredDistanceTo(x, y, z) <= getHideDistanceSquared()
+    }
+
+    @JvmStatic
+    fun npcCheck(otherPlayer: PlayerLikeEntity): Boolean {
+        val networkHandler = MinecraftClient.getInstance().networkHandler ?: return false
+        return networkHandler.getPlayerListEntry(otherPlayer.uuid) != null
     }
 
     @JvmStatic

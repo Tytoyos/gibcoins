@@ -13,7 +13,8 @@ data class ClickSliderSetting(
     val step: Double = 0.1,
     val value: () -> Double,
     val onChange: (Double) -> Unit,
-    val formatter: (Double) -> String = { it.toString() }
+    val formatter: (Double) -> String = { it.toString() },
+    val insertAfterToggleName: String? = null
 )
 
 data class ClickCategory(
