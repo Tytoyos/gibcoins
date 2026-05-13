@@ -14,7 +14,8 @@ class HelpCommand : BaseCommand() {
         dispatcher.register(
             ClientCommandManager.literal("gchelp")
                 .executes { context ->
-                    context.source.sendFeedback(Text.literal("§cList of Party Commands: \n" +
+                    context.source.sendFeedback(Text.literal("Use §d/coin§f to open the config.\n \n" +
+                            "§cList of Party Commands: \n" +
                             "§6!forcefem <name>  -> forcefully feminizes a player. \n" +
                             "§e!gamblekick <name> -> has a 33.33% chance to kick the target. \n" +
                             "§2!shittercheck <name> -> checks if the player is a shitter. \n" +
