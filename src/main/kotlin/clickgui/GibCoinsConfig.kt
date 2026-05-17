@@ -2,6 +2,7 @@ package clickgui
 
 import impl.qol.NearbyPlayerHider
 import impl.qol.InvMeow
+import impl.qol.GummyNotifier
 import impl.qol.Overlay
 import impl.qol.SchizoSim
 import impl.qol.SystemNotifier
@@ -47,6 +48,9 @@ object GibCoinsConfig {
         )
 
         Overlay.setEnabled(properties.getProperty("overlay.enabled")?.toBooleanStrictOrNull() ?: Overlay.isEnabled())
+        GummyNotifier.setEnabled(
+            properties.getProperty("gummyNotifier.enabled")?.toBooleanStrictOrNull() ?: GummyNotifier.isEnabled()
+        )
         InvMeow.setEnabled(properties.getProperty("invMeow.enabled")?.toBooleanStrictOrNull() ?: InvMeow.isEnabled())
         InvMeow.setVolume(properties.getProperty("invMeow.volume")?.toDoubleOrNull() ?: InvMeow.getVolume())
         SchizoSim.setEnabled(properties.getProperty("schizoSim.enabled")?.toBooleanStrictOrNull() ?: SchizoSim.isEnabled())
@@ -67,6 +71,7 @@ object GibCoinsConfig {
             setProperty("playerHider.ghostOpacity", NearbyPlayerHider.getGhostOpacity().toString())
             setProperty("playerHider.hideDistance", NearbyPlayerHider.getHideDistance().toString())
             setProperty("overlay.enabled", Overlay.isEnabled().toString())
+            setProperty("gummyNotifier.enabled", GummyNotifier.isEnabled().toString())
             setProperty("invMeow.enabled", InvMeow.isEnabled().toString())
             setProperty("invMeow.volume", InvMeow.getVolume().toString())
             setProperty("schizoSim.enabled", SchizoSim.isEnabled().toString())

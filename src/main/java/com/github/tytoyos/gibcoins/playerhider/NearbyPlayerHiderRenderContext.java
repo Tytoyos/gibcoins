@@ -1,8 +1,6 @@
 package com.github.tytoyos.gibcoins.playerhider;
 
 import impl.qol.NearbyPlayerHider;
-import net.minecraft.util.math.ColorHelper;
-
 public final class NearbyPlayerHiderRenderContext {
 	public static final int GHOST_ITEM_TINT_SENTINEL = 0x67686274;
 	private static final ThreadLocal<Boolean> GHOST_ARMOR_RENDER = ThreadLocal.withInitial(() -> false);
@@ -58,6 +56,7 @@ public final class NearbyPlayerHiderRenderContext {
 	}
 
 	public static int applyGhostOpacity(int color) {
-		return ColorHelper.mix(ColorHelper.getWhite(getGhostAlpha() / 255.0F), color == 0 ? -1 : color);
+		int baseColor = color == 0 ? 0x00FFFFFF : color;
+		return (getGhostAlpha() << 24) | (baseColor & 0x00FFFFFF);
 	}
 }

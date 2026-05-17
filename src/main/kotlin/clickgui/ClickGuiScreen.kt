@@ -2,6 +2,7 @@ package clickgui
 
 import impl.qol.NearbyPlayerHider
 import impl.qol.InvMeow
+import impl.qol.GummyNotifier
 import impl.qol.Overlay
 import impl.qol.SchizoSim
 import impl.qol.SystemNotifier
@@ -102,11 +103,18 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                                 step = 0.1,
                                 value = { NearbyPlayerHider.getHideDistance() },
                                 onChange = NearbyPlayerHider::setHideDistance,
-                                formatter = { value -> String.format(Locale.US, "%.1f", value) }
+                                formatter = { value -> String.format(Locale.US, "%.1f", value) },
+                                insertAfterToggleName = "Hide Players"
                             )
                         )
                     },
                     onClick = { NearbyPlayerHider.toggleEnabled() }
+                ),
+                ClickFeature(
+                    name = "Gummy Reminder",
+                    description = "Shows a title when Smoldering Polarization expires.",
+                    status = { enabledLabel(GummyNotifier.isEnabled()) },
+                    onClick = { GummyNotifier.toggleEnabled() }
                 ),
                 ClickFeature(
                     name = "InvMeow",

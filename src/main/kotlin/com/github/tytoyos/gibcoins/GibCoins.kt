@@ -10,6 +10,7 @@ import commands.RollCommand
 import commands.TestPartyCommand
 import clickgui.GibCoinsConfig
 import commands.TestInvProc
+import impl.qol.GummyNotifier
 import impl.qol.InvMeow
 import impl.qol.Overlay
 import impl.qol.SystemNotifier
@@ -34,6 +35,7 @@ object GibCoins : ClientModInitializer {
 		Overlay.register()
 		OverlayTestCommand().initialize()
 		RollCommand().initialize()
+		GummyNotifier.register()
 		SystemNotifier.register()
 		TestPartyCommand().initialize()
 		TestInvProc().initialize()

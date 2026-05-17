@@ -18,7 +18,7 @@ public class ItemRendererMixin {
 	)
 	private static float gibcoins$ghostHeldItemAlpha(float alpha) {
 		return NearbyPlayerHiderRenderContext.isGhostItemQuadsRenderActive()
-			? alpha * (NearbyPlayerHiderRenderContext.getGhostAlpha() / 255.0F)
+			? (NearbyPlayerHiderRenderContext.getGhostAlpha() / 255.0F)
 			: alpha;
 	}
 }

@@ -41,8 +41,9 @@ public class PlayerEntityRendererMixin {
 		);
 		hiderState.gibcoins$setPlayerHiderHidden(true);
 		hiderState.gibcoins$setPlayerHiderGhost(ghost);
-		renderState.invisible = true;
+		renderState.invisible = !ghost;
 		renderState.invisibleToPlayer = !ghost;
+		renderState.capeVisible = false;
 		renderState.playerName = null;
 		renderState.displayName = null;
 	}
