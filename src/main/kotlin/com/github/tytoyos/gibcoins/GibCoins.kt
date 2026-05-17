@@ -29,18 +29,20 @@ object GibCoins : ClientModInitializer {
 
 	override fun onInitializeClient() {
 		GibCoinsConfig.load()
+
+		GummyNotifier.register()
+		Overlay.register()
+		SystemNotifier.register()
+
 		ClickGuiCommand().initialize()
 		DebugCommand().initialize()
 		FunFactCommand().initialize()
 		HelpCommand().initialize()
 		HidePlayersCommand().initialize()
-		Overlay.register()
 		OverlayTestCommand().initialize()
 		RollCommand().initialize()
-		GummyNotifier.register()
-		SystemNotifier.register()
-		TestPartyCommand().initialize()
 		TestInvProc().initialize()
+		TestPartyCommand().initialize()
 
 		ClientReceiveMessageEvents.CHAT.register { message, _, _, _, _ ->
 			handleIncomingChatLine(message.string)
