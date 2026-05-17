@@ -1,7 +1,8 @@
-package commands
+package debug
 
 import com.github.tytoyos.gibcoins.GibCoins
 import com.mojang.brigadier.CommandDispatcher
+import commands.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.client.MinecraftClient
@@ -22,7 +23,11 @@ class TestInvProc : BaseCommand() {
     ) {
         dispatcher.register(
             ClientCommandManager.literal("inv")
-                .executes {
+                .executes { context ->
+                    if (!DebugMode.isEnabled()) {
+                        context.source.sendFeedback(Text.literal("Debug mode is disabled."))
+                        return@executes 0
+                    }
                     val trigger = text.random()
                     MinecraftClient.getInstance().inGameHud.chatHud.addMessage(Text.literal(trigger))
                     GibCoins.handleIncomingChatLine(trigger)

@@ -1,6 +1,7 @@
 package clickgui
 
 import impl.qol.NearbyPlayerHider
+import debug.DebugMode
 import impl.qol.InvMeow
 import impl.qol.GummyNotifier
 import impl.qol.Overlay
@@ -48,6 +49,9 @@ object GibCoinsConfig {
         )
 
         Overlay.setEnabled(properties.getProperty("overlay.enabled")?.toBooleanStrictOrNull() ?: Overlay.isEnabled())
+        DebugMode.setEnabled(
+            properties.getProperty("debugMode.enabled")?.toBooleanStrictOrNull() ?: DebugMode.isEnabled()
+        )
         GummyNotifier.setEnabled(
             properties.getProperty("gummyNotifier.enabled")?.toBooleanStrictOrNull() ?: GummyNotifier.isEnabled()
         )
@@ -71,6 +75,7 @@ object GibCoinsConfig {
             setProperty("playerHider.ghostOpacity", NearbyPlayerHider.getGhostOpacity().toString())
             setProperty("playerHider.hideDistance", NearbyPlayerHider.getHideDistance().toString())
             setProperty("overlay.enabled", Overlay.isEnabled().toString())
+            setProperty("debugMode.enabled", DebugMode.isEnabled().toString())
             setProperty("gummyNotifier.enabled", GummyNotifier.isEnabled().toString())
             setProperty("invMeow.enabled", InvMeow.isEnabled().toString())
             setProperty("invMeow.volume", InvMeow.getVolume().toString())

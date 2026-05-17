@@ -3,13 +3,14 @@ package com.github.tytoyos.gibcoins
 import impl.partycommands.CommandManager
 import clickgui.ClickGuiCommand
 import commands.FunFactCommand
+import debug.DebugCommand
 import commands.HelpCommand
 import commands.HidePlayersCommand
-import commands.OverlayTestCommand
-import commands.RollCommand
-import commands.TestPartyCommand
+import debug.OverlayTestCommand
+import debug.RollCommand
+import debug.TestPartyCommand
 import clickgui.GibCoinsConfig
-import commands.TestInvProc
+import debug.TestInvProc
 import impl.qol.GummyNotifier
 import impl.qol.InvMeow
 import impl.qol.Overlay
@@ -29,6 +30,7 @@ object GibCoins : ClientModInitializer {
 	override fun onInitializeClient() {
 		GibCoinsConfig.load()
 		ClickGuiCommand().initialize()
+		DebugCommand().initialize()
 		FunFactCommand().initialize()
 		HelpCommand().initialize()
 		HidePlayersCommand().initialize()

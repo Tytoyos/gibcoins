@@ -1,6 +1,7 @@
 package clickgui
 
 import impl.qol.NearbyPlayerHider
+import debug.DebugMode
 import impl.qol.InvMeow
 import impl.qol.GummyNotifier
 import impl.qol.Overlay
@@ -9,6 +10,7 @@ import impl.qol.SystemNotifier
 import net.minecraft.client.gui.Click
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.input.CharInput
 import net.minecraft.client.input.KeyInput
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
@@ -224,9 +226,12 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
         rowBounds.clear()
         tooltip = null
 
-        categories.forEachIndexed { categoryIndex, category ->
-            val panelX = width / 2 - ((categories.size * categoryWidth) + ((categories.size - 1) * categoryGap)) / 2 +
-                categoryIndex * (categoryWidth + categoryGap)
+        val visibleCategoryIndices = categories.indices.filter { isCategoryVisible(categories[it]) }
+        val visibleCount = visibleCategoryIndices.size
+        visibleCategoryIndices.forEachIndexed { visibleIndex, categoryIndex ->
+            val category = categories[categoryIndex]
+            val panelX = width / 2 - ((visibleCount * categoryWidth) + ((visibleCount - 1) * categoryGap)) / 2 +
+                visibleIndex * (categoryWidth + categoryGap)
             val panelY = max(24, height / 7)
             val totalContentHeight = computeContentHeight(category)
             val maxPanelHeight = height - panelY - 100
@@ -333,17 +338,21 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     return true
                 }
             }
-
-            else -> {
-                val character = keyToCharacter(input)
-                if (character != null && searchQuery.length < 16) {
-                    searchQuery += character
-                    return true
-                }
-            }
         }
 
         return super.keyPressed(input)
+    }
+
+    override fun charTyped(input: CharInput): Boolean {
+        if (input.isValidChar()) {
+            val typed = String(Character.toChars(input.codepoint()))
+            if (searchQuery.length + typed.length <= 16) {
+                searchQuery += typed
+                return true
+            }
+        }
+
+        return super.charTyped(input)
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
@@ -352,9 +361,12 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
         }
 
-        categories.forEachIndexed { categoryIndex, category ->
-            val panelX = width / 2 - ((categories.size * categoryWidth) + ((categories.size - 1) * categoryGap)) / 2 +
-                categoryIndex * (categoryWidth + categoryGap)
+        val visibleCategoryIndices = categories.indices.filter { isCategoryVisible(categories[it]) }
+        val visibleCount = visibleCategoryIndices.size
+        visibleCategoryIndices.forEachIndexed { visibleIndex, categoryIndex ->
+            val category = categories[categoryIndex]
+            val panelX = width / 2 - ((visibleCount * categoryWidth) + ((visibleCount - 1) * categoryGap)) / 2 +
+                visibleIndex * (categoryWidth + categoryGap)
             val panelY = max(24, height / 7)
             val totalContentHeight = computeContentHeight(category)
             val maxPanelHeight = height - panelY - 100
@@ -721,28 +733,16 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
         return searchQuery.isBlank() || feature.name.contains(searchQuery, ignoreCase = true)
     }
 
-    private fun keyToCharacter(input: KeyInput): String? {
-        val shift = (input.modifiers() and GLFW.GLFW_MOD_SHIFT) != 0
-
-        return when (input.key()) {
-            in GLFW.GLFW_KEY_A..GLFW.GLFW_KEY_Z -> {
-                val offset = input.key() - GLFW.GLFW_KEY_A
-                ('a' + offset).toString().let { if (shift) it.uppercase() else it }
-            }
-
-            in GLFW.GLFW_KEY_0..GLFW.GLFW_KEY_9 -> (input.key() - GLFW.GLFW_KEY_0).toString()
-            GLFW.GLFW_KEY_SPACE -> " "
-            GLFW.GLFW_KEY_MINUS -> if (shift) "_" else "-"
-            else -> null
-        }
-    }
-
     companion object {
         private fun enabledLabel(enabled: Boolean): String = if (enabled) "ON" else "OFF"
     }
 
     private fun hasExpandableSettings(feature: ClickFeature): Boolean {
         return feature.toggleSettings().isNotEmpty() || feature.settings().isNotEmpty() || feature.sliders().isNotEmpty()
+    }
+
+    private fun isCategoryVisible(category: ClickCategory): Boolean {
+        return category.name != "debug" || DebugMode.isEnabled()
     }
 
     private fun rowIntersectsViewport(y: Int, height: Int, clipTop: Int, clipBottom: Int): Boolean {

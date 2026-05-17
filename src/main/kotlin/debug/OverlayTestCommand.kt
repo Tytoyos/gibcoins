@@ -1,10 +1,12 @@
-package commands
+package debug
 
 import com.mojang.brigadier.CommandDispatcher
+import commands.BaseCommand
 import impl.qol.Overlay
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
+import net.minecraft.text.Text
 
 class OverlayTestCommand : BaseCommand() {
     override fun register(
@@ -13,8 +15,13 @@ class OverlayTestCommand : BaseCommand() {
     ) {
         dispatcher.register(
             ClientCommandManager.literal("overlay")
-                .executes {
+                .executes { context ->
+                    if (!DebugMode.isEnabled()) {
+                        context.source.sendFeedback(Text.literal("Debug mode is disabled."))
+                        return@executes 0
+                    }
                     Overlay.show()
-                    1})
+                    1
+                })
     }
 }
