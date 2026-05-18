@@ -3,7 +3,6 @@ package clickgui
 import impl.qol.NearbyPlayerHider
 import debug.DebugMode
 import impl.qol.InvMeow
-import impl.qol.GummyNotifier
 import impl.qol.Overlay
 import impl.qol.SchizoSim
 import impl.qol.SystemNotifier
@@ -111,12 +110,6 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                         )
                     },
                     onClick = { NearbyPlayerHider.toggleEnabled() }
-                ),
-                ClickFeature(
-                    name = "Gummy Reminder",
-                    description = "Shows a title when Smoldering Polarization expires.",
-                    status = { enabledLabel(GummyNotifier.isEnabled()) },
-                    onClick = { GummyNotifier.toggleEnabled() }
                 ),
                 ClickFeature(
                     name = "InvMeow",

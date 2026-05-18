@@ -11,7 +11,6 @@ import debug.RollCommand
 import debug.TestPartyCommand
 import clickgui.GibCoinsConfig
 import debug.TestInvProc
-import impl.qol.GummyNotifier
 import impl.qol.InvMeow
 import impl.qol.Overlay
 import impl.qol.SystemNotifier
@@ -30,7 +29,6 @@ object GibCoins : ClientModInitializer {
 	override fun onInitializeClient() {
 		GibCoinsConfig.load()
 
-		GummyNotifier.register()
 		Overlay.register()
 		SystemNotifier.register()
 
