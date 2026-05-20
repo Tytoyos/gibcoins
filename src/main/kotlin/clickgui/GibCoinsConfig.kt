@@ -3,10 +3,10 @@ package clickgui
 import impl.qol.NearbyPlayerHider
 import debug.DebugMode
 import impl.qol.InvMeow
-import impl.partycommands.PartyCommandSettings
-import impl.qol.Overlay
-import impl.qol.SchizoSim
-import impl.qol.SystemNotifier
+import impl.`fun`.partycommands.PartyCommandSettings
+import impl.`fun`.Overlay
+import impl.`fun`.SchizoSim
+import impl.`fun`.SystemNotifier
 import net.fabricmc.loader.api.FabricLoader
 import java.nio.file.Files
 import java.nio.file.Path

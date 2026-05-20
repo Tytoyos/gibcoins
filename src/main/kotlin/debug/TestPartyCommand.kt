@@ -3,7 +3,7 @@ package debug
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import commands.BaseCommand
-import impl.partycommands.CommandManager
+import impl.`fun`.partycommands.CommandManager
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess

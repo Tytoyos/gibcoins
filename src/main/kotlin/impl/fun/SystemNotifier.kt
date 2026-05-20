@@ -1,4 +1,4 @@
-package impl.qol
+package impl.`fun`
 
 import clickgui.GibCoinsConfig
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
@@ -51,8 +51,8 @@ object SystemNotifier {
         val playerName = MinecraftClient.getInstance().session.username
         val message = listOf("nice weather.", "feet :drool:", "$playerName seems kinda gay...", "yea you're getting banned, $playerName.", "$playerName could use some estrogen.", "ban JakeLegend")
 
-        if (Random.nextDouble() < 0.5) {
-            modMessage("${name.random()}§f: ${message.random()}","")
+        if (Random.Default.nextDouble() < 0.5) {
+            modMessage("${name.random()}§f: ${message.random()}", "")
         }
     }
 

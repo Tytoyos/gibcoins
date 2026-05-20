@@ -1,4 +1,4 @@
-package impl.qol
+package impl.`fun`
 
 import clickgui.GibCoinsConfig
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -74,7 +74,7 @@ object Overlay {
     }
 
     fun showRandom() {
-        if (Random.nextDouble() < 0.1)
+        if (Random.Default.nextDouble() < 0.1)
             show()
     }
 

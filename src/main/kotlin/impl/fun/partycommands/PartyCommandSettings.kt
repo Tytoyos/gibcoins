@@ -1,4 +1,4 @@
-package impl.partycommands
+package impl.`fun`.partycommands
 
 import clickgui.GibCoinsConfig
 

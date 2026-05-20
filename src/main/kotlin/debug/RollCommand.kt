@@ -2,7 +2,7 @@ package debug
 
 import com.mojang.brigadier.CommandDispatcher
 import commands.BaseCommand
-import impl.qol.SystemNotifier
+import impl.`fun`.SystemNotifier
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess

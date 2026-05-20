@@ -1,4 +1,4 @@
-package impl.partycommands
+package impl.`fun`.partycommands
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text

@@ -1,6 +1,6 @@
 package debug
 
-import impl.partycommands.PartyCommand
+import impl.`fun`.partycommands.PartyCommand
 import net.minecraft.client.MinecraftClient
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit

@@ -1,4 +1,4 @@
-package impl.qol
+package impl.`fun`
 
 import clickgui.GibCoinsConfig
 

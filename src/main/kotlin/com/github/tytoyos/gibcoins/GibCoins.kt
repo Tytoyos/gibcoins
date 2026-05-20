@@ -1,6 +1,6 @@
 package com.github.tytoyos.gibcoins
 
-import impl.partycommands.CommandManager
+import impl.`fun`.partycommands.CommandManager
 import clickgui.ClickGuiCommand
 import commands.FunFactCommand
 import debug.DebugCommand
@@ -12,8 +12,8 @@ import debug.TestPartyCommand
 import clickgui.GibCoinsConfig
 import debug.TestInvProc
 import impl.qol.InvMeow
-import impl.qol.Overlay
-import impl.qol.SystemNotifier
+import impl.`fun`.Overlay
+import impl.`fun`.SystemNotifier
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import org.slf4j.LoggerFactory

@@ -1,4 +1,4 @@
-package impl.partycommands
+package impl.`fun`.partycommands
 
 import net.minecraft.client.MinecraftClient
 import java.util.concurrent.CompletableFuture
@@ -18,10 +18,10 @@ class ShitterCheck : PartyCommand {
                 "$target is a shitter.",
                 "$target is not a shitter.",
                 "I'm not sure on this one.",
-                "STAY AWAY FROM THIS GUY!!!",
+                "STAY AWAY FROM THIS \"INDIVIDUAL\"!!!",
                 "$target saved my cat from a burning building!",
                 "Might wanna checkout $target's hard drive.",
-                "I'm not saying he IS a shitter, but i also won't say that he ISN'T one."
+                "I'm not saying they ARE a shitter, but i also won't say that they AREN'T one."
             )
             val answerRego = listOf(
                 "Regocike? More like Shittercike!", "*redacted*",
