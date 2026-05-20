@@ -3,6 +3,7 @@ package clickgui
 import impl.qol.NearbyPlayerHider
 import debug.DebugMode
 import impl.qol.InvMeow
+import impl.partycommands.PartyCommandSettings
 import impl.qol.Overlay
 import impl.qol.SchizoSim
 import impl.qol.SystemNotifier
@@ -57,6 +58,33 @@ object GibCoinsConfig {
         SystemNotifier.setEnabled(
             properties.getProperty("systemNotifier.enabled")?.toBooleanStrictOrNull() ?: SystemNotifier.isEnabled()
         )
+        PartyCommandSettings.setEnabled(
+            properties.getProperty("partyCommands.enabled")?.toBooleanStrictOrNull() ?: PartyCommandSettings.isEnabled()
+        )
+        PartyCommandSettings.setForcefemEnabled(
+            properties.getProperty("partyCommands.forcefem.enabled")?.toBooleanStrictOrNull()
+                ?: PartyCommandSettings.isForcefemEnabled()
+        )
+        PartyCommandSettings.setOwnerOnlyEnabled(
+            properties.getProperty("partyCommands.ownerOnly.enabled")?.toBooleanStrictOrNull()
+                ?: PartyCommandSettings.isOwnerOnlyEnabled()
+        )
+        PartyCommandSettings.setGambleKickEnabled(
+            properties.getProperty("partyCommands.gamblekick.enabled")?.toBooleanStrictOrNull()
+                ?: PartyCommandSettings.isGambleKickEnabled()
+        )
+        PartyCommandSettings.setFunFactEnabled(
+            properties.getProperty("partyCommands.funfact.enabled")?.toBooleanStrictOrNull()
+                ?: PartyCommandSettings.isFunFactEnabled()
+        )
+        PartyCommandSettings.setShitterCheckEnabled(
+            properties.getProperty("partyCommands.shittercheck.enabled")?.toBooleanStrictOrNull()
+                ?: PartyCommandSettings.isShitterCheckEnabled()
+        )
+        PartyCommandSettings.setKillEnabled(
+            properties.getProperty("partyCommands.kill.enabled")?.toBooleanStrictOrNull()
+                ?: PartyCommandSettings.isKillEnabled()
+        )
     }
 
     fun save() {
@@ -76,6 +104,13 @@ object GibCoinsConfig {
             setProperty("invMeow.volume", InvMeow.getVolume().toString())
             setProperty("schizoSim.enabled", SchizoSim.isEnabled().toString())
             setProperty("systemNotifier.enabled", SystemNotifier.isEnabled().toString())
+            setProperty("partyCommands.enabled", PartyCommandSettings.isEnabled().toString())
+            setProperty("partyCommands.ownerOnly.enabled", PartyCommandSettings.isOwnerOnlyEnabled().toString())
+            setProperty("partyCommands.forcefem.enabled", PartyCommandSettings.isForcefemEnabled().toString())
+            setProperty("partyCommands.gamblekick.enabled", PartyCommandSettings.isGambleKickEnabled().toString())
+            setProperty("partyCommands.funfact.enabled", PartyCommandSettings.isFunFactEnabled().toString())
+            setProperty("partyCommands.shittercheck.enabled", PartyCommandSettings.isShitterCheckEnabled().toString())
+            setProperty("partyCommands.kill.enabled", PartyCommandSettings.isKillEnabled().toString())
         }
 
         Files.newOutputStream(configFile).use { output ->

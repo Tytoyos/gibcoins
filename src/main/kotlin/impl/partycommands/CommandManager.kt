@@ -41,13 +41,31 @@ object CommandManager {
     }
 
     fun handleChat(sender: String, message: String): String? {
-        if (!message.startsWith(PREFIX)) return null
+        if (!PartyCommandSettings.isEnabled() || !message.startsWith(PREFIX)) return null
+        val localPlayerName = MinecraftClient.getInstance().session.username
+        if (PartyCommandSettings.isOwnerOnlyEnabled() && !sender.equals(localPlayerName, ignoreCase = true)) {
+            return null
+        }
 
         val parts = message.removePrefix(PREFIX).split(" ")
         val commandName = parts[0].lowercase()
         val args = parts.drop(1)
 
+        if (!isCommandEnabled(commandName)) {
+            return null
+        }
 
         return commands[commandName]?.execute(sender, args)
+    }
+
+    private fun isCommandEnabled(commandName: String): Boolean {
+        return when (commandName) {
+            "forcefem" -> PartyCommandSettings.isForcefemEnabled()
+            "gamblekick" -> PartyCommandSettings.isGambleKickEnabled()
+            "funfact" -> PartyCommandSettings.isFunFactEnabled()
+            "shittercheck" -> PartyCommandSettings.isShitterCheckEnabled()
+            "kill" -> PartyCommandSettings.isKillEnabled()
+            else -> true
+        }
     }
 }

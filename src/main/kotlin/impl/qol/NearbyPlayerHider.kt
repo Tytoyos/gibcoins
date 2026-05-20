@@ -2,9 +2,11 @@ package impl.qol
 
 import clickgui.GibCoinsConfig
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.network.OtherClientPlayerEntity
 import net.minecraft.entity.Entity
 import net.minecraft.entity.PlayerLikeEntity
 import net.minecraft.entity.player.PlayerEntity
+import java.util.UUID
 
 object NearbyPlayerHider {
     private const val DEFAULT_HIDE_DISTANCE = 1.5
@@ -13,6 +15,7 @@ object NearbyPlayerHider {
     private const val DEFAULT_GHOST_OPACITY = 15.0
     private const val MIN_GHOST_OPACITY = 0.0
     private const val MAX_GHOST_OPACITY = 100.0
+    private const val PLAYER_VALIDATION_DELAY_MS = 1250L
 
     private var enabled = false
     private var renderHidingEnabled = false
@@ -21,6 +24,7 @@ object NearbyPlayerHider {
     private var clickThroughEnabled = false
     private var hideDistance = DEFAULT_HIDE_DISTANCE
     private var ghostOpacity = DEFAULT_GHOST_OPACITY
+    private val remotePlayerValidationSince = mutableMapOf<UUID, Long>()
 
     @JvmStatic
     fun toggleEnabled(): Boolean {
@@ -140,7 +144,12 @@ object NearbyPlayerHider {
 
     @JvmStatic
     fun shouldAffectPlayer(localPlayer: PlayerEntity?, otherPlayer: PlayerLikeEntity, x: Double, y: Double, z: Double): Boolean {
-        if (!enabled || localPlayer == null || otherPlayer == localPlayer || !npcCheck(otherPlayer)) {
+        if (
+            !enabled ||
+            localPlayer == null ||
+            otherPlayer == localPlayer ||
+            !isRealRemotePlayer(otherPlayer)
+        ) {
             return false
         }
 
@@ -149,8 +158,26 @@ object NearbyPlayerHider {
 
     @JvmStatic
     fun npcCheck(otherPlayer: PlayerLikeEntity): Boolean {
+        if (otherPlayer !is OtherClientPlayerEntity) {
+            return false
+        }
+
         val networkHandler = MinecraftClient.getInstance().networkHandler ?: return false
-        return networkHandler.getPlayerListEntry(otherPlayer.uuid) != null
+        val hasTabEntry = networkHandler.getPlayerListEntry(otherPlayer.uuid) != null
+        if (!hasTabEntry) {
+            remotePlayerValidationSince.remove(otherPlayer.uuid)
+            return false
+        }
+
+        val now = System.currentTimeMillis()
+        val firstSeenAt = remotePlayerValidationSince.putIfAbsent(otherPlayer.uuid, now) ?: now
+        return now - firstSeenAt >= PLAYER_VALIDATION_DELAY_MS
+    }
+
+    @JvmStatic
+    fun isRealRemotePlayer(entity: Entity?): Boolean {
+        val player = entity as? OtherClientPlayerEntity ?: return false
+        return npcCheck(player)
     }
 
     @JvmStatic
@@ -169,10 +196,18 @@ object NearbyPlayerHider {
 
     @JvmStatic
     fun shouldClickThrough(localPlayer: PlayerEntity?, entity: Entity?): Boolean {
-        if (!enabled || !clickThroughEnabled || localPlayer == null || entity !is PlayerEntity || entity == localPlayer) {
+        val targetPlayer = entity as? PlayerLikeEntity ?: return false
+
+        if (
+            !enabled ||
+            !clickThroughEnabled ||
+            localPlayer == null ||
+            targetPlayer == localPlayer ||
+            !npcCheck(targetPlayer)
+        ) {
             return false
         }
 
-        return shouldAffectPlayer(localPlayer, entity, entity.x, entity.y, entity.z)
+        return shouldAffectPlayer(localPlayer, targetPlayer, targetPlayer.x, targetPlayer.y, targetPlayer.z)
     }
 }

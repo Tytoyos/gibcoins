@@ -3,6 +3,7 @@ package clickgui
 import impl.qol.NearbyPlayerHider
 import debug.DebugMode
 import impl.qol.InvMeow
+import impl.partycommands.PartyCommandSettings
 import impl.qol.Overlay
 import impl.qol.SchizoSim
 import impl.qol.SystemNotifier
@@ -129,10 +130,55 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                         )
                     },
                     onClick = { InvMeow.toggleEnabled() }
+                )
+            )
+        ),
+        ClickCategory(
+            name = "fun",
+            features = listOf(
+                ClickFeature(
+                    name = "Party Commands",
+                    description = "Enable chat-triggered party commands and control each command separately.",
+                    status = { enabledLabel(PartyCommandSettings.isEnabled()) },
+                    toggleSettings = {
+                        listOf(
+                            ClickToggleSetting(
+                                name = "Owner Only",
+                                enabled = { PartyCommandSettings.isOwnerOnlyEnabled() },
+                                onToggle = { PartyCommandSettings.toggleOwnerOnly() }
+                            ),
+                            ClickToggleSetting(
+                                name = "Forcefem",
+                                enabled = { PartyCommandSettings.isForcefemEnabled() },
+                                onToggle = { PartyCommandSettings.toggleForcefem() }
+                            ),
+                            ClickToggleSetting(
+                                name = "GambleKick",
+                                enabled = { PartyCommandSettings.isGambleKickEnabled() },
+                                onToggle = { PartyCommandSettings.toggleGambleKick() }
+                            ),
+                            ClickToggleSetting(
+                                name = "FunFact",
+                                enabled = { PartyCommandSettings.isFunFactEnabled() },
+                                onToggle = { PartyCommandSettings.toggleFunFact() }
+                            ),
+                            ClickToggleSetting(
+                                name = "ShitterCheck",
+                                enabled = { PartyCommandSettings.isShitterCheckEnabled() },
+                                onToggle = { PartyCommandSettings.toggleShitterCheck() }
+                            ),
+                            ClickToggleSetting(
+                                name = "Kill",
+                                enabled = { PartyCommandSettings.isKillEnabled() },
+                                onToggle = { PartyCommandSettings.toggleKill() }
+                            )
+                        )
+                    },
+                    onClick = { PartyCommandSettings.toggleEnabled() }
                 ),
                 ClickFeature(
-                    name = "Schizo Sim",
-                    description = "Experience Schizophrenia.",
+                    name = "Schizophrenia",
+                    description = "Pay attention to your chat.",
                     status = { enabledLabel(SchizoSim.isEnabled()) },
                     toggleSettings = {
                         listOf(
