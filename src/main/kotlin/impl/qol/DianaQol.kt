@@ -4,7 +4,7 @@ import clickgui.GibCoinsConfig
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 
-object IgnoreGrass {
+object DianaQol {
     private var enabled = false
 
     @JvmStatic
@@ -25,6 +25,12 @@ object IgnoreGrass {
 
     @JvmStatic
     fun shouldIgnore(state: BlockState): Boolean {
-        return enabled && (state.isOf(Blocks.SHORT_GRASS) || state.isOf(Blocks.TALL_GRASS))
+        return enabled && (
+            state.isOf(Blocks.SHORT_GRASS) ||
+                state.isOf(Blocks.TALL_GRASS) ||
+                state.isOf(Blocks.FERN) ||
+                state.isOf(Blocks.LARGE_FERN) ||
+                state.isOf(Blocks.DEAD_BUSH)
+            )
     }
 }

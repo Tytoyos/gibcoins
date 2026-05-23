@@ -3,7 +3,7 @@ package clickgui
 import impl.qol.NearbyPlayerHider
 import debug.DebugMode
 import impl.qol.InvMeow
-import impl.qol.IgnoreGrass
+import impl.qol.DianaQol
 import impl.`fun`.partycommands.PartyCommandSettings
 import impl.`fun`.Overlay
 import impl.`fun`.SchizoSim
@@ -133,10 +133,10 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     onClick = { InvMeow.toggleEnabled() }
                 ),
                 ClickFeature(
-                    name = "Ignore Grass",
+                    name = "Diana qol",
                     description = "Lets attacks target entities through grass and tall grass.",
-                    status = { enabledLabel(IgnoreGrass.isEnabled()) },
-                    onClick = { IgnoreGrass.toggleEnabled() }
+                    status = { enabledLabel(DianaQol.isEnabled()) },
+                    onClick = { DianaQol.toggleEnabled() }
                 )
             )
         ),
