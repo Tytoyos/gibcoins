@@ -5,6 +5,7 @@
 	"mixins": [
 	],
 	"client": [
+		"ignoregrass.ClientPlayerEntityMixin",
 		"playerhider.ArmorFeatureRendererMixin",
 		"playerhider.ClientPlayerEntityMixin",
 		"playerhider.EquipmentRendererMixin",

@@ -1,6 +1,7 @@
 package clickgui
 
 import impl.qol.NearbyPlayerHider
+import impl.qol.IgnoreGrass
 import debug.DebugMode
 import impl.qol.InvMeow
 import impl.`fun`.partycommands.PartyCommandSettings
@@ -54,6 +55,9 @@ object GibCoinsConfig {
         )
         InvMeow.setEnabled(properties.getProperty("invMeow.enabled")?.toBooleanStrictOrNull() ?: InvMeow.isEnabled())
         InvMeow.setVolume(properties.getProperty("invMeow.volume")?.toDoubleOrNull() ?: InvMeow.getVolume())
+        IgnoreGrass.setEnabled(
+            properties.getProperty("ignoreGrass.enabled")?.toBooleanStrictOrNull() ?: IgnoreGrass.isEnabled()
+        )
         SchizoSim.setEnabled(properties.getProperty("schizoSim.enabled")?.toBooleanStrictOrNull() ?: SchizoSim.isEnabled())
         SystemNotifier.setEnabled(
             properties.getProperty("systemNotifier.enabled")?.toBooleanStrictOrNull() ?: SystemNotifier.isEnabled()
@@ -102,6 +106,7 @@ object GibCoinsConfig {
             setProperty("debugMode.enabled", DebugMode.isEnabled().toString())
             setProperty("invMeow.enabled", InvMeow.isEnabled().toString())
             setProperty("invMeow.volume", InvMeow.getVolume().toString())
+            setProperty("ignoreGrass.enabled", IgnoreGrass.isEnabled().toString())
             setProperty("schizoSim.enabled", SchizoSim.isEnabled().toString())
             setProperty("systemNotifier.enabled", SystemNotifier.isEnabled().toString())
             setProperty("partyCommands.enabled", PartyCommandSettings.isEnabled().toString())
