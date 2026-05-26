@@ -12,6 +12,7 @@ import debug.TestPartyCommand
 import clickgui.GibCoinsConfig
 import debug.TestInvProc
 import impl.qol.InvMeow
+import impl.qol.SmartTermAC
 import impl.`fun`.Overlay
 import impl.`fun`.SystemNotifier
 import net.fabricmc.api.ClientModInitializer
@@ -31,6 +32,7 @@ object GibCoins : ClientModInitializer {
 
 		Overlay.register()
 		SystemNotifier.register()
+		SmartTermAC.register()
 
 		ClickGuiCommand().initialize()
 		DebugCommand().initialize()

@@ -5,9 +5,9 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.sound.SoundEvents
 
 object InvMeow {
-    private const val DEFAULT_VOLUME = 2.5
-    private const val MIN_VOLUME = 0.2
-    private const val MAX_VOLUME = 30.0
+    private const val DEFAULT_VOLUME = 150.0
+    private const val MIN_VOLUME = 100.0
+    private const val MAX_VOLUME = 500.0
 
     private val triggers = setOf(
         "Your \u269A Bonzo's Mask saved your life!",

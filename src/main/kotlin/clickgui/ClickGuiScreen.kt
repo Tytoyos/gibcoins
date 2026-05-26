@@ -4,6 +4,7 @@ import impl.qol.NearbyPlayerHider
 import debug.DebugMode
 import impl.qol.InvMeow
 import impl.qol.DianaQol
+import impl.qol.SmartTermAC
 import impl.`fun`.partycommands.PartyCommandSettings
 import impl.`fun`.Overlay
 import impl.`fun`.SchizoSim
@@ -157,6 +158,12 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     description = "Helps with annoying hitboxes during Diana Event.",
                     status = { enabledLabel(DianaQol.isEnabled()) },
                     onClick = { DianaQol.toggleEnabled() }
+                ),
+                ClickFeature(
+                    name = "Smart Term AC",
+                    description = "TermAC but doesn't trigger on Rend Terminator.",
+                    status = { enabledLabel(SmartTermAC.isEnabled()) },
+                    onClick = { SmartTermAC.toggleEnabled() }
                 )
             )
         ),
@@ -165,7 +172,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             features = listOf(
                 ClickFeature(
                     name = "Party Commands",
-                    description = "Enable chat-triggered party commands and control each command separately.",
+                    description = "Enable party commands and toggle each command separately.",
                     status = { enabledLabel(PartyCommandSettings.isEnabled()) },
                     toggleSettings = {
                         listOf(

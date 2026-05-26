@@ -4,6 +4,7 @@ import impl.qol.NearbyPlayerHider
 import impl.qol.DianaQol
 import debug.DebugMode
 import impl.qol.InvMeow
+import impl.qol.SmartTermAC
 import impl.`fun`.partycommands.PartyCommandSettings
 import impl.`fun`.Overlay
 import impl.`fun`.SchizoSim
@@ -58,6 +59,9 @@ object GibCoinsConfig {
         DianaQol.setEnabled(
             properties.getProperty("Diana qol.enabled")?.toBooleanStrictOrNull() ?: DianaQol.isEnabled()
         )
+        SmartTermAC.setEnabled(
+            properties.getProperty("smartTermAC.enabled")?.toBooleanStrictOrNull() ?: SmartTermAC.isEnabled()
+        )
         SchizoSim.setEnabled(properties.getProperty("schizoSim.enabled")?.toBooleanStrictOrNull() ?: SchizoSim.isEnabled())
         SystemNotifier.setEnabled(
             properties.getProperty("systemNotifier.enabled")?.toBooleanStrictOrNull() ?: SystemNotifier.isEnabled()
@@ -110,6 +114,7 @@ object GibCoinsConfig {
             setProperty("invMeow.enabled", InvMeow.isEnabled().toString())
             setProperty("invMeow.volume", InvMeow.getVolume().toString())
             setProperty("Diana qol.enabled", DianaQol.isEnabled().toString())
+            setProperty("smartTermAC.enabled", SmartTermAC.isEnabled().toString())
             setProperty("schizoSim.enabled", SchizoSim.isEnabled().toString())
             setProperty("systemNotifier.enabled", SystemNotifier.isEnabled().toString())
             setProperty("partyCommands.enabled", PartyCommandSettings.isEnabled().toString())

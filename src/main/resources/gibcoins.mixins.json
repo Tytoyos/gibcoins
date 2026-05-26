@@ -5,6 +5,7 @@
 	"mixins": [
 	],
 	"client": [
+		"KeyBindingAccessor",
 		"ignoregrass.ClientPlayerEntityMixin",
 		"playerhider.ArmorFeatureRendererMixin",
 		"playerhider.ClientPlayerEntityMixin",
