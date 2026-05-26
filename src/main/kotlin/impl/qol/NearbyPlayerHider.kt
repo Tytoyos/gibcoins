@@ -208,6 +208,6 @@ object NearbyPlayerHider {
             return false
         }
 
-        return shouldAffectPlayer(localPlayer, targetPlayer, targetPlayer.x, targetPlayer.y, targetPlayer.z)
+        return true
     }
 }

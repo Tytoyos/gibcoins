@@ -2,9 +2,21 @@ package impl.qol
 
 import clickgui.GibCoinsConfig
 import net.minecraft.block.BlockState
-import net.minecraft.block.Blocks
+import net.minecraft.registry.Registries
 
 object DianaQol {
+    private val ignoredBlockIds = setOf(
+        "minecraft:short_grass",
+        "minecraft:tall_grass",
+        "minecraft:fern",
+        "minecraft:large_fern",
+        "minecraft:dead_bush",
+        "minecraft:bush",
+        "minecraft:red_tulip",
+        "minecraft:azure_bluet",
+        "minecraft:rose"
+    )
+
     private var enabled = false
 
     @JvmStatic
@@ -25,12 +37,11 @@ object DianaQol {
 
     @JvmStatic
     fun shouldIgnore(state: BlockState): Boolean {
-        return enabled && (
-            state.isOf(Blocks.SHORT_GRASS) ||
-                state.isOf(Blocks.TALL_GRASS) ||
-                state.isOf(Blocks.FERN) ||
-                state.isOf(Blocks.LARGE_FERN) ||
-                state.isOf(Blocks.DEAD_BUSH)
-            )
+        if (!enabled) {
+            return false
+        }
+
+        val id = Registries.BLOCK.getId(state.block).toString()
+        return id in ignoredBlockIds
     }
 }

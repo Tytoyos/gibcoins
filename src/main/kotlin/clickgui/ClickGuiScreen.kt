@@ -134,7 +134,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                 ),
                 ClickFeature(
                     name = "Diana qol",
-                    description = "Lets attacks target entities through grass and tall grass.",
+                    description = "Helps with annoying hitboxes during Diana Event.",
                     status = { enabledLabel(DianaQol.isEnabled()) },
                     onClick = { DianaQol.toggleEnabled() }
                 )

@@ -17,9 +17,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ClientPlayerEntity.class)
+@Mixin(value = ClientPlayerEntity.class, priority = 2000)
 public abstract class ClientPlayerEntityMixin {
-	@Inject(method = "getCrosshairTarget", at = @At("RETURN"), cancellable = true)
+	@Inject(method = "getCrosshairTarget", at = @At("RETURN"), cancellable = true, order = 0)
 	private void gibcoins$clickThroughHiddenPlayers(float tickDelta, Entity cameraEntity, CallbackInfoReturnable<HitResult> cir) {
 		HitResult hitResult = cir.getReturnValue();
 		if (!(hitResult instanceof EntityHitResult entityHitResult)) {
@@ -31,10 +31,10 @@ public abstract class ClientPlayerEntityMixin {
 			return;
 		}
 
-		cir.setReturnValue(gibcoins$findAlternateHit(self, cameraEntity, tickDelta));
+		cir.setReturnValue(gibcoins$findAlternateHitPlayerHider(self, cameraEntity, tickDelta));
 	}
 
-	private static HitResult gibcoins$findAlternateHit(ClientPlayerEntity player, Entity cameraEntity, float tickDelta) {
+	private static HitResult gibcoins$findAlternateHitPlayerHider(ClientPlayerEntity player, Entity cameraEntity, float tickDelta) {
 		ItemStack heldStack = player.getActiveOrMainHandStack();
 		AttackRangeComponent attackRange = heldStack.get(DataComponentTypes.ATTACK_RANGE);
 		if (attackRange != null) {
