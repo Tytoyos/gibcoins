@@ -6,13 +6,9 @@ import net.minecraft.component.type.NbtComponent
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import java.util.Locale
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.jvm.optionals.getOrNull
 
 object ItemUtils {
-    val idToNameMap = ConcurrentHashMap<String, String>()
-    val nameToIdMap = ConcurrentHashMap<String, String>()
-
     val ItemStack.customData: NbtCompound
         get() = getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt()
 
