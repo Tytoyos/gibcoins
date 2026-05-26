@@ -89,6 +89,9 @@ object GibCoinsConfig {
             properties.getProperty("partyCommands.kill.enabled")?.toBooleanStrictOrNull()
                 ?: PartyCommandSettings.isKillEnabled()
         )
+        PartyCommandSettings.setBlacklist(
+            properties.getProperty("partyCommands.blacklist") ?: PartyCommandSettings.getBlacklist()
+        )
     }
 
     fun save() {
@@ -116,6 +119,7 @@ object GibCoinsConfig {
             setProperty("partyCommands.funfact.enabled", PartyCommandSettings.isFunFactEnabled().toString())
             setProperty("partyCommands.shittercheck.enabled", PartyCommandSettings.isShitterCheckEnabled().toString())
             setProperty("partyCommands.kill.enabled", PartyCommandSettings.isKillEnabled().toString())
+            setProperty("partyCommands.blacklist", PartyCommandSettings.getBlacklist())
         }
 
         Files.newOutputStream(configFile).use { output ->

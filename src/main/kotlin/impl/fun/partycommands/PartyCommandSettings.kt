@@ -10,6 +10,7 @@ object PartyCommandSettings {
     private var funFactEnabled = true
     private var shitterCheckEnabled = true
     private var killEnabled = true
+    private var blacklist = ""
 
     @JvmStatic
     fun isEnabled(): Boolean = enabled
@@ -121,5 +122,30 @@ object PartyCommandSettings {
         killEnabled = !killEnabled
         GibCoinsConfig.save()
         return killEnabled
+    }
+
+    @JvmStatic
+    fun getBlacklist(): String = blacklist
+
+    @JvmStatic
+    fun setBlacklist(value: String) {
+        blacklist = value
+        GibCoinsConfig.save()
+    }
+
+    @JvmStatic
+    fun getBlacklistCount(): Int = parseBlacklist().size
+
+    @JvmStatic
+    fun isBlacklisted(sender: String): Boolean {
+        return parseBlacklist().any { it.equals(sender.trim(), ignoreCase = true) }
+    }
+
+    private fun parseBlacklist(): List<String> {
+        return blacklist
+            .split(Regex("[,;\\s]+"))
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .distinctBy { it.lowercase() }
     }
 }

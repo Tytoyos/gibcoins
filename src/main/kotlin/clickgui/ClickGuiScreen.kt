@@ -8,6 +8,7 @@ import impl.`fun`.partycommands.PartyCommandSettings
 import impl.`fun`.Overlay
 import impl.`fun`.SchizoSim
 import impl.`fun`.SystemNotifier
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.Click
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
@@ -26,6 +27,24 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
         val categoryIndex: Int,
         val featureIndex: Int,
         val sliderIndex: Int
+    )
+
+    private data class ActiveTextInput(
+        val categoryIndex: Int,
+        val featureIndex: Int,
+        val textIndex: Int,
+        val cursorIndex: Int
+    ) {
+        fun matches(categoryIndex: Int, featureIndex: Int, textIndex: Int): Boolean {
+            return this.categoryIndex == categoryIndex &&
+                this.featureIndex == featureIndex &&
+                this.textIndex == textIndex
+        }
+    }
+
+    private data class VisibleTextWindow(
+        val startIndex: Int,
+        val text: String
     )
 
     private data class TooltipData(
@@ -52,7 +71,8 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
     private enum class RowType {
         FEATURE,
         SETTING_TOGGLE,
-        SETTING_SLIDER
+        SETTING_SLIDER,
+        SETTING_TEXT
     }
 
     private val categories = mutableListOf(
@@ -181,6 +201,20 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                             )
                         )
                     },
+                    textSettings = {
+                        listOf(
+                            ClickTextSetting(
+                                name = "Blacklist",
+                                buttonText = {
+                                    val count = PartyCommandSettings.getBlacklistCount()
+                                    if (count == 0) "Edit" else "$count names"
+                                },
+                                value = { PartyCommandSettings.getBlacklist() },
+                                onChange = { value -> PartyCommandSettings.setBlacklist(value) },
+                                placeholder = "name1, name2"
+                            )
+                        )
+                    },
                     onClick = { PartyCommandSettings.toggleEnabled() }
                 ),
                 ClickFeature(
@@ -247,6 +281,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
     private val scrollOffsets = MutableList(categories.size) { 0 }
     private var tooltip: TooltipData? = null
     private var activeSlider: ActiveSlider? = null
+    private var activeTextInput: ActiveTextInput? = null
 
     private val categoryWidth = 240
     private val categoryGap = 10
@@ -310,7 +345,10 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
     }
 
     override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
-        val clickedRow = rowBounds.lastOrNull { it.contains(click.x(), click.y()) } ?: return super.mouseClicked(click, doubled)
+        val clickedRow = rowBounds.lastOrNull { it.contains(click.x(), click.y()) } ?: run {
+            activeTextInput = null
+            return super.mouseClicked(click, doubled)
+        }
         val button = click.button()
 
         return when (clickedRow.type) {
@@ -318,9 +356,11 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                 val feature = categories[clickedRow.categoryIndex].features[clickedRow.featureIndex]
 
                 if (button == 0) {
+                    activeTextInput = null
                     feature.onClick()
                     true
                 } else if (button == 1 && hasExpandableSettings(feature)) {
+                    activeTextInput = null
                     feature.expanded = !feature.expanded
                     true
                 } else {
@@ -332,6 +372,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                 val feature = categories[clickedRow.categoryIndex].features[clickedRow.featureIndex]
                 val toggleSetting = feature.toggleSettings().getOrNull(clickedRow.settingIndex)
                 if (button == 0) {
+                    activeTextInput = null
                     toggleSetting?.onToggle?.invoke()
                     true
                 } else {
@@ -344,8 +385,32 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     return super.mouseClicked(click, doubled)
                 }
 
+                activeTextInput = null
                 updateSliderValue(clickedRow, click.x())
                 activeSlider = ActiveSlider(clickedRow.categoryIndex, clickedRow.featureIndex, clickedRow.settingIndex)
+                true
+            }
+
+            RowType.SETTING_TEXT -> {
+                if (button != 0) {
+                    return super.mouseClicked(click, doubled)
+                }
+
+                activeSlider = null
+                val textSetting = getTextSetting(clickedRow.categoryIndex, clickedRow.featureIndex, clickedRow.settingIndex)
+                val currentValue = textSetting?.value().orEmpty()
+                val activeInput = activeTextInput
+                val cursorIndex = if (activeInput?.matches(clickedRow.categoryIndex, clickedRow.featureIndex, clickedRow.settingIndex) == true) {
+                    cursorIndexForClick(currentValue, activeInput.cursorIndex, clickedRow.x, clickedRow.width, click.x())
+                } else {
+                    currentValue.length
+                }
+                activeTextInput = ActiveTextInput(
+                    clickedRow.categoryIndex,
+                    clickedRow.featureIndex,
+                    clickedRow.settingIndex,
+                    cursorIndex.coerceIn(0, currentValue.length)
+                )
                 true
             }
         }
@@ -376,6 +441,70 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
     }
 
     override fun keyPressed(input: KeyInput): Boolean {
+        val textInput = activeTextInput
+        if (textInput != null) {
+            val textSetting = getTextSetting(textInput) ?: run {
+                activeTextInput = null
+                return super.keyPressed(input)
+            }
+            val currentValue = textSetting.value()
+            val cursorIndex = textInput.cursorIndex.coerceIn(0, currentValue.length)
+
+            if (isPasteShortcut(input)) {
+                pasteClipboardText(textSetting, textInput, currentValue, cursorIndex)
+                return true
+            }
+
+            when (input.key()) {
+                GLFW.GLFW_KEY_ESCAPE, GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> {
+                    activeTextInput = null
+                    return true
+                }
+
+                GLFW.GLFW_KEY_LEFT -> {
+                    activeTextInput = textInput.copy(cursorIndex = (cursorIndex - 1).coerceAtLeast(0))
+                    return true
+                }
+
+                GLFW.GLFW_KEY_RIGHT -> {
+                    activeTextInput = textInput.copy(cursorIndex = (cursorIndex + 1).coerceAtMost(currentValue.length))
+                    return true
+                }
+
+                GLFW.GLFW_KEY_HOME -> {
+                    activeTextInput = textInput.copy(cursorIndex = 0)
+                    return true
+                }
+
+                GLFW.GLFW_KEY_END -> {
+                    activeTextInput = textInput.copy(cursorIndex = currentValue.length)
+                    return true
+                }
+
+                GLFW.GLFW_KEY_BACKSPACE -> {
+                    if (cursorIndex > 0) {
+                        textSetting.onChange(
+                            currentValue.substring(0, cursorIndex - 1) + currentValue.substring(cursorIndex)
+                        )
+                        activeTextInput = textInput.copy(cursorIndex = cursorIndex - 1)
+                    }
+                    return true
+                }
+
+                GLFW.GLFW_KEY_DELETE -> {
+                    if (cursorIndex < currentValue.length) {
+                        textSetting.onChange(
+                            currentValue.substring(0, cursorIndex) + currentValue.substring(cursorIndex + 1)
+                        )
+                        activeTextInput = textInput.copy(cursorIndex = cursorIndex)
+                    }
+                    return true
+                }
+            }
+
+            return true
+        }
+
         when (input.key()) {
             GLFW.GLFW_KEY_ESCAPE -> return super.keyPressed(input)
             GLFW.GLFW_KEY_BACKSPACE -> {
@@ -390,6 +519,27 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
     }
 
     override fun charTyped(input: CharInput): Boolean {
+        val textInput = activeTextInput
+        if (textInput != null) {
+            val textSetting = getTextSetting(textInput) ?: run {
+                activeTextInput = null
+                return super.charTyped(input)
+            }
+
+            if (input.isValidChar()) {
+                val typed = String(Character.toChars(input.codepoint()))
+                val currentValue = textSetting.value()
+                val cursorIndex = textInput.cursorIndex.coerceIn(0, currentValue.length)
+                if (currentValue.length + typed.length <= textSetting.maxLength) {
+                    textSetting.onChange(
+                        currentValue.substring(0, cursorIndex) + typed + currentValue.substring(cursorIndex)
+                    )
+                    activeTextInput = textInput.copy(cursorIndex = cursorIndex + typed.length)
+                }
+            }
+            return true
+        }
+
         if (input.isValidChar()) {
             val typed = String(Character.toChars(input.codepoint()))
             if (searchQuery.length + typed.length <= 16) {
@@ -520,6 +670,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
         val toggleRows = feature.toggleSettings()
         val infoRows = feature.settings()
         val sliders = feature.sliders()
+        val textRows = feature.textSettings()
         var currentY = y
 
         toggleRows.forEachIndexed { settingIndex, toggleRow ->
@@ -557,6 +708,21 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     )
                 }
             }
+        }
+
+        textRows.forEachIndexed { textIndex, textSetting ->
+            currentY = drawTextSettingRow(
+                context,
+                textSetting,
+                categoryIndex,
+                featureIndex,
+                textIndex,
+                x,
+                currentY,
+                boxWidth,
+                clipTop,
+                clipBottom
+            )
         }
 
         infoRows.forEach { (label, value) ->
@@ -658,6 +824,66 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
         return y + settingHeight
     }
 
+    private fun drawTextSettingRow(
+        context: DrawContext,
+        textSetting: ClickTextSetting,
+        categoryIndex: Int,
+        featureIndex: Int,
+        textIndex: Int,
+        x: Int,
+        y: Int,
+        boxWidth: Int,
+        clipTop: Int,
+        clipBottom: Int
+    ): Int {
+        context.fill(x, y, x + boxWidth, y + settingHeight, 0xA5141414.toInt())
+
+        val labelX = x + 6
+        val labelY = y + settingHeight / 2 - 8
+        context.drawTextWithShadow(textRenderer, Text.literal(textSetting.name), labelX, labelY, 0xFFFFFFFF.toInt())
+
+        val activeInput = activeTextInput
+        if (activeInput?.matches(categoryIndex, featureIndex, textIndex) == true) {
+            val fieldX = x + 74
+            val fieldY = y + settingHeight / 2 - 10
+            val fieldWidth = boxWidth - 80
+            val value = textSetting.value()
+            val cursorIndex = activeInput.cursorIndex.coerceIn(0, value.length)
+            val color = if (value.isEmpty()) 0xFF9A9A9A.toInt() else 0xFFFFFFFF.toInt()
+            val visibleText = visibleTextWindow(value, cursorIndex, fieldWidth - 8)
+            val displayText = if (value.isEmpty()) {
+                fitTextToWidth(textSetting.placeholder, fieldWidth - 8)
+            } else {
+                visibleText.text
+            }
+            val cursorX = fieldX + 4 + textRenderer.getWidth(value.substring(visibleText.startIndex, cursorIndex))
+
+            context.fill(fieldX, fieldY, fieldX + fieldWidth, fieldY + 20, 0xFF262626.toInt())
+            drawRoundedOutline(context, fieldX, fieldY, fieldWidth, 20, accentColor)
+            context.drawTextWithShadow(textRenderer, Text.literal(displayText), fieldX + 4, fieldY + 6, color)
+            context.fill(cursorX, fieldY + 4, cursorX + 1, fieldY + 16, 0xFFFFFFFF.toInt())
+            addRowBoundsIfVisible(RowType.SETTING_TEXT, categoryIndex, featureIndex, textIndex, fieldX, fieldY, fieldWidth, 20, clipTop, clipBottom)
+        } else {
+            val buttonText = textSetting.buttonText()
+            val buttonWidth = max(50, textRenderer.getWidth(buttonText) + 16).coerceAtMost(boxWidth - 86)
+            val buttonX = x + boxWidth - buttonWidth - 6
+            val buttonY = y + settingHeight / 2 - 10
+
+            context.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + 20, 0xFF262626.toInt())
+            drawRoundedOutline(context, buttonX, buttonY, buttonWidth, 20, accentColor)
+            context.drawCenteredTextWithShadow(
+                textRenderer,
+                Text.literal(fitTextToWidth(buttonText, buttonWidth - 8)),
+                buttonX + buttonWidth / 2,
+                buttonY + 6,
+                0xFFFFFFFF.toInt()
+            )
+            addRowBoundsIfVisible(RowType.SETTING_TEXT, categoryIndex, featureIndex, textIndex, buttonX, buttonY, buttonWidth, 20, clipTop, clipBottom)
+        }
+
+        return y + settingHeight
+    }
+
     private fun drawCategoryRows(
         context: DrawContext,
         categoryIndex: Int,
@@ -697,6 +923,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                 total += feature.toggleSettings().size * settingHeight
                 total += feature.settings().size * settingHeight
                 total += feature.sliders().size * settingHeight
+                total += feature.textSettings().size * settingHeight
                 total += rowSpacing
             }
         }
@@ -733,6 +960,118 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
             rawValue
         }.coerceIn(slider.min, slider.max)
         slider.onChange(snappedValue)
+    }
+
+    private fun isPasteShortcut(input: KeyInput): Boolean {
+        val pasteModifier = GLFW.GLFW_MOD_CONTROL or GLFW.GLFW_MOD_SUPER
+        return input.key() == GLFW.GLFW_KEY_V && input.modifiers() and pasteModifier != 0
+    }
+
+    private fun pasteClipboardText(
+        textSetting: ClickTextSetting,
+        textInput: ActiveTextInput,
+        currentValue: String,
+        cursorIndex: Int
+    ) {
+        val clipboardText = MinecraftClient.getInstance().keyboard.getClipboard()
+        val sanitizedText = clipboardText
+            .replace(Regex("[\\r\\n\\t]+"), " ")
+            .filter { !Character.isISOControl(it) }
+        val availableLength = textSetting.maxLength - currentValue.length
+
+        if (sanitizedText.isEmpty() || availableLength <= 0) {
+            return
+        }
+
+        val insertedText = sanitizedText.take(availableLength)
+        textSetting.onChange(
+            currentValue.substring(0, cursorIndex) + insertedText + currentValue.substring(cursorIndex)
+        )
+        activeTextInput = textInput.copy(cursorIndex = cursorIndex + insertedText.length)
+    }
+
+    private fun getTextSetting(input: ActiveTextInput): ClickTextSetting? {
+        return getTextSetting(input.categoryIndex, input.featureIndex, input.textIndex)
+    }
+
+    private fun getTextSetting(categoryIndex: Int, featureIndex: Int, textIndex: Int): ClickTextSetting? {
+        return categories
+            .getOrNull(categoryIndex)
+            ?.features
+            ?.getOrNull(featureIndex)
+            ?.textSettings()
+            ?.getOrNull(textIndex)
+    }
+
+    private fun cursorIndexForClick(value: String, currentCursorIndex: Int, fieldX: Int, fieldWidth: Int, clickX: Double): Int {
+        if (value.isEmpty()) {
+            return 0
+        }
+
+        val visibleText = visibleTextWindow(value, currentCursorIndex.coerceIn(0, value.length), fieldWidth - 8)
+        val localX = (clickX - fieldX - 4).coerceAtLeast(0.0)
+
+        visibleText.text.indices.forEach { index ->
+            val charStart = textRenderer.getWidth(visibleText.text.substring(0, index))
+            val charEnd = textRenderer.getWidth(visibleText.text.substring(0, index + 1))
+            val midpoint = charStart + (charEnd - charStart) / 2.0
+            if (localX < midpoint) {
+                return visibleText.startIndex + index
+            }
+        }
+
+        return (visibleText.startIndex + visibleText.text.length).coerceIn(0, value.length)
+    }
+
+    private fun visibleTextWindow(value: String, cursorIndex: Int, maxWidth: Int): VisibleTextWindow {
+        if (maxWidth <= 0 || value.isEmpty()) {
+            return VisibleTextWindow(0, "")
+        }
+        if (textRenderer.getWidth(value) <= maxWidth) {
+            return VisibleTextWindow(0, value)
+        }
+
+        val cursor = cursorIndex.coerceIn(0, value.length)
+        var start = cursor
+        var end = cursor
+
+        while (start > 0) {
+            val candidate = value.substring(start - 1, end)
+            if (textRenderer.getWidth(candidate) > maxWidth) {
+                break
+            }
+            start--
+        }
+
+        while (end < value.length) {
+            val candidate = value.substring(start, end + 1)
+            if (textRenderer.getWidth(candidate) > maxWidth) {
+                break
+            }
+            end++
+        }
+
+        return VisibleTextWindow(start, value.substring(start, end))
+    }
+
+    private fun fitTextToWidth(text: String, maxWidth: Int): String {
+        if (maxWidth <= 0 || text.isEmpty()) {
+            return ""
+        }
+        if (textRenderer.getWidth(text) <= maxWidth) {
+            return text
+        }
+
+        val prefix = "..."
+        if (textRenderer.getWidth(prefix) > maxWidth) {
+            return ""
+        }
+
+        var trimmed = text
+        while (trimmed.isNotEmpty() && textRenderer.getWidth(prefix + trimmed) > maxWidth) {
+            trimmed = trimmed.drop(1)
+        }
+        return if (trimmed.isEmpty()) prefix else prefix + trimmed
     }
 
     private fun drawTooltip(context: DrawContext) {
@@ -784,7 +1123,10 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
     }
 
     private fun hasExpandableSettings(feature: ClickFeature): Boolean {
-        return feature.toggleSettings().isNotEmpty() || feature.settings().isNotEmpty() || feature.sliders().isNotEmpty()
+        return feature.toggleSettings().isNotEmpty() ||
+            feature.settings().isNotEmpty() ||
+            feature.sliders().isNotEmpty() ||
+            feature.textSettings().isNotEmpty()
     }
 
     private fun isCategoryVisible(category: ClickCategory): Boolean {

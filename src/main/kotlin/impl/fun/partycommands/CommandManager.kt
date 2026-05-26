@@ -43,6 +43,9 @@ object CommandManager {
     fun handleChat(sender: String, message: String): String? {
         if (!PartyCommandSettings.isEnabled() || !message.startsWith(PREFIX)) return null
         val localPlayerName = MinecraftClient.getInstance().session.username
+        if (PartyCommandSettings.isBlacklisted(sender)) {
+            return null
+        }
         if (PartyCommandSettings.isOwnerOnlyEnabled() && !sender.equals(localPlayerName, ignoreCase = true)) {
             return null
         }

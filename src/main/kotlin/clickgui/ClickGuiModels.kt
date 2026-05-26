@@ -17,6 +17,15 @@ data class ClickSliderSetting(
     val insertAfterToggleName: String? = null
 )
 
+data class ClickTextSetting(
+    val name: String,
+    val buttonText: () -> String,
+    val value: () -> String,
+    val onChange: (String) -> Unit,
+    val placeholder: String = "",
+    val maxLength: Int = 256
+)
+
 data class ClickCategory(
     val name: String,
     val features: List<ClickFeature>,
@@ -30,6 +39,7 @@ data class ClickFeature(
     val settings: (() -> List<Pair<String, String>>) = { emptyList() },
     val toggleSettings: (() -> List<ClickToggleSetting>) = { emptyList() },
     val sliders: (() -> List<ClickSliderSetting>) = { emptyList() },
+    val textSettings: (() -> List<ClickTextSetting>) = { emptyList() },
     val onClick: () -> Unit = {},
     var expanded: Boolean = false
 )
