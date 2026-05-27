@@ -21,7 +21,9 @@
 		"playerhider.PlayerEntityRendererMixin",
 		"playerhider.PlayerHeadModelRendererMixin",
 		"playerhider.PlayerHeldItemFeatureRendererMixin",
-		"playerhider.SkullBlockEntityRendererMixin"
+		"playerhider.SkullBlockEntityRendererMixin",
+		"playersize.PlayerEntityRenderStateMixin",
+		"playersize.PlayerEntityRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

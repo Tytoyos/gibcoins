@@ -1,6 +1,7 @@
 package clickgui
 
 import impl.qol.NearbyPlayerHider
+import impl.qol.PlayerSize
 import debug.DebugMode
 import impl.qol.InvMeow
 import impl.qol.DianaQol
@@ -133,6 +134,52 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                         )
                     },
                     onClick = { NearbyPlayerHider.toggleEnabled() }
+                ),
+                ClickFeature(
+                    name = "Player Size",
+                    description = "Scales rendered player models independently on each axis.",
+                    status = { enabledLabel(PlayerSize.isEnabled()) },
+                    toggleSettings = {
+                        listOf(
+                            ClickToggleSetting(
+                                name = "Scale All Players",
+                                enabled = { PlayerSize.isScaleAllPlayersEnabled() },
+                                onToggle = { PlayerSize.toggleScaleAllPlayers() }
+                            )
+                        )
+                    },
+                    sliders = {
+                        listOf(
+                            ClickSliderSetting(
+                                name = "X Scale",
+                                min = PlayerSize.getMinScale(),
+                                max = PlayerSize.getMaxScale(),
+                                step = PlayerSize.getScaleStep(),
+                                value = { PlayerSize.getXScale() },
+                                onChange = PlayerSize::setXScale,
+                                formatter = { value -> String.format(Locale.US, "%.1f", value) }
+                            ),
+                            ClickSliderSetting(
+                                name = "Y Scale",
+                                min = PlayerSize.getMinScale(),
+                                max = PlayerSize.getMaxScale(),
+                                step = PlayerSize.getScaleStep(),
+                                value = { PlayerSize.getYScale() },
+                                onChange = PlayerSize::setYScale,
+                                formatter = { value -> String.format(Locale.US, "%.1f", value) }
+                            ),
+                            ClickSliderSetting(
+                                name = "Z Scale",
+                                min = PlayerSize.getMinScale(),
+                                max = PlayerSize.getMaxScale(),
+                                step = PlayerSize.getScaleStep(),
+                                value = { PlayerSize.getZScale() },
+                                onChange = PlayerSize::setZScale,
+                                formatter = { value -> String.format(Locale.US, "%.1f", value) }
+                            )
+                        )
+                    },
+                    onClick = { PlayerSize.toggleEnabled() }
                 ),
                 ClickFeature(
                     name = "InvMeow",

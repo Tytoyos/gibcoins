@@ -1,6 +1,7 @@
 package clickgui
 
 import impl.qol.NearbyPlayerHider
+import impl.qol.PlayerSize
 import impl.qol.DianaQol
 import debug.DebugMode
 import impl.qol.InvMeow
@@ -56,6 +57,16 @@ object GibCoinsConfig {
         )
         InvMeow.setEnabled(properties.getProperty("invMeow.enabled")?.toBooleanStrictOrNull() ?: InvMeow.isEnabled())
         InvMeow.setVolume(properties.getProperty("invMeow.volume")?.toDoubleOrNull() ?: InvMeow.getVolume())
+        PlayerSize.setEnabled(
+            properties.getProperty("playerSize.enabled")?.toBooleanStrictOrNull() ?: PlayerSize.isEnabled()
+        )
+        PlayerSize.setScaleAllPlayers(
+            properties.getProperty("playerSize.scaleAllPlayers")?.toBooleanStrictOrNull()
+                ?: PlayerSize.isScaleAllPlayersEnabled()
+        )
+        PlayerSize.setXScale(properties.getProperty("playerSize.xScale")?.toDoubleOrNull() ?: PlayerSize.getXScale())
+        PlayerSize.setYScale(properties.getProperty("playerSize.yScale")?.toDoubleOrNull() ?: PlayerSize.getYScale())
+        PlayerSize.setZScale(properties.getProperty("playerSize.zScale")?.toDoubleOrNull() ?: PlayerSize.getZScale())
         DianaQol.setEnabled(
             properties.getProperty("Diana qol.enabled")?.toBooleanStrictOrNull() ?: DianaQol.isEnabled()
         )
@@ -113,6 +124,11 @@ object GibCoinsConfig {
             setProperty("debugMode.enabled", DebugMode.isEnabled().toString())
             setProperty("invMeow.enabled", InvMeow.isEnabled().toString())
             setProperty("invMeow.volume", InvMeow.getVolume().toString())
+            setProperty("playerSize.enabled", PlayerSize.isEnabled().toString())
+            setProperty("playerSize.scaleAllPlayers", PlayerSize.isScaleAllPlayersEnabled().toString())
+            setProperty("playerSize.xScale", PlayerSize.getXScale().toString())
+            setProperty("playerSize.yScale", PlayerSize.getYScale().toString())
+            setProperty("playerSize.zScale", PlayerSize.getZScale().toString())
             setProperty("Diana qol.enabled", DianaQol.isEnabled().toString())
             setProperty("smartTermAC.enabled", SmartTermAC.isEnabled().toString())
             setProperty("schizoSim.enabled", SchizoSim.isEnabled().toString())

@@ -8,6 +8,7 @@ GibCoins is a lightweight addon for Hypixel Skyblock, mainly intended for having
 - Diana qol (Easy toggle to deal with annoying hitboxes in the Diana event)
 - InvMeow (Plays a cat sound whenever you proc your invincibility)
 - Schizophrenia
+- Player Size
 
 I'm actively working on more features. Feel free to contact me, if you want to request a feature.
 
