@@ -1,6 +1,7 @@
 package impl.qol
 
 import clickgui.GibCoinsConfig
+import com.github.tytoyos.gibcoins.mixin.KeyBindingAccessor
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayerEntity
@@ -16,14 +17,19 @@ object LeapFrog {
     private const val DISTANCE_EPSILON = 0.08
     private const val MIN_WAKE_DISTANCE = 0.2
     private const val MAX_WAKE_DISTANCE = 8.5
+    private const val SIMULATED_JUMP_HOLD_TICKS = 2
 
     private var enabled = false
     private var currentBobberId = -1
     private var jumpedBobberId = -1
+    private var simulatedJumpReleaseTicks = 0
 
     fun register() {
         ClientTickEvents.START_CLIENT_TICK.register { client ->
             tick(client)
+        }
+        ClientTickEvents.END_CLIENT_TICK.register { client ->
+            releaseSimulatedJump(client)
         }
     }
 
@@ -60,7 +66,7 @@ object LeapFrog {
         }
 
         if (distanceToWake <= TRIGGER_DISTANCE + DISTANCE_EPSILON) {
-            if (jumpOnce(player)) {
+            if (pressJumpOnce(client, player)) {
                 jumpedBobberId = bobber.id
             }
         }
@@ -109,7 +115,7 @@ object LeapFrog {
         jumpedBobberId = -1
     }
 
-    private fun jumpOnce(player: ClientPlayerEntity): Boolean {
+    private fun pressJumpOnce(client: MinecraftClient, player: ClientPlayerEntity): Boolean {
         if (
             !player.isOnGround ||
             player.hasVehicle() ||
@@ -119,8 +125,28 @@ object LeapFrog {
             return false
         }
 
-        player.jump()
+        val jumpKey = client.options.jumpKey
+        if (!jumpKey.isPressed) {
+            jumpKey.setPressed(true)
+            simulatedJumpReleaseTicks = SIMULATED_JUMP_HOLD_TICKS
+        }
+
+        val jumpKeyAccessor = jumpKey as KeyBindingAccessor
+        jumpKeyAccessor.setTimesPressed(jumpKeyAccessor.getTimesPressed() + 1)
         return true
+    }
+
+    private fun releaseSimulatedJump(client: MinecraftClient) {
+        if (simulatedJumpReleaseTicks <= 0) {
+            return
+        }
+
+        simulatedJumpReleaseTicks--
+        if (simulatedJumpReleaseTicks > 0) {
+            return
+        }
+
+        client.options.jumpKey.setPressed(false)
     }
 
     private fun isHoldingFishingRod(player: ClientPlayerEntity): Boolean {
