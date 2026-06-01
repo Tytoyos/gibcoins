@@ -5,6 +5,8 @@ import impl.qol.PlayerSize
 import debug.DebugMode
 import impl.qol.InvMeow
 import impl.qol.DianaQol
+import impl.qol.GoldenFishCI
+import impl.qol.LeapFrog
 import impl.qol.SmartTermAC
 import impl.`fun`.partycommands.PartyCommandSettings
 import impl.`fun`.Overlay
@@ -205,6 +207,18 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                     description = "Helps with annoying hitboxes during Diana Event.",
                     status = { enabledLabel(DianaQol.isEnabled()) },
                     onClick = { DianaQol.toggleEnabled() }
+                ),
+                ClickFeature(
+                    name = "Golden Fish CI",
+                    description = "Lets you throw your rod when Golden Fish is too close.",
+                    status = { enabledLabel(GoldenFishCI.isEnabled()) },
+                    onClick = { GoldenFishCI.toggleEnabled() }
+                ),
+                ClickFeature(
+                    name = "Leap Frog",
+                    description = "Jumps once when a hooked fish is about 0.6s from biting.",
+                    status = { enabledLabel(LeapFrog.isEnabled()) },
+                    onClick = { LeapFrog.toggleEnabled() }
                 ),
                 ClickFeature(
                     name = "Smart Term AC",

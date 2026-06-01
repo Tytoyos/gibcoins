@@ -3,6 +3,8 @@ package clickgui
 import impl.qol.NearbyPlayerHider
 import impl.qol.PlayerSize
 import impl.qol.DianaQol
+import impl.qol.GoldenFishCI
+import impl.qol.LeapFrog
 import debug.DebugMode
 import impl.qol.InvMeow
 import impl.qol.SmartTermAC
@@ -70,6 +72,12 @@ object GibCoinsConfig {
         DianaQol.setEnabled(
             properties.getProperty("Diana qol.enabled")?.toBooleanStrictOrNull() ?: DianaQol.isEnabled()
         )
+        GoldenFishCI.setEnabled(
+            properties.getProperty("goldenFishCI.enabled")?.toBooleanStrictOrNull() ?: GoldenFishCI.isEnabled()
+        )
+        LeapFrog.setEnabled(
+            properties.getProperty("leapFrog.enabled")?.toBooleanStrictOrNull() ?: LeapFrog.isEnabled()
+        )
         SmartTermAC.setEnabled(
             properties.getProperty("smartTermAC.enabled")?.toBooleanStrictOrNull() ?: SmartTermAC.isEnabled()
         )
@@ -130,6 +138,8 @@ object GibCoinsConfig {
             setProperty("playerSize.yScale", PlayerSize.getYScale().toString())
             setProperty("playerSize.zScale", PlayerSize.getZScale().toString())
             setProperty("Diana qol.enabled", DianaQol.isEnabled().toString())
+            setProperty("goldenFishCI.enabled", GoldenFishCI.isEnabled().toString())
+            setProperty("leapFrog.enabled", LeapFrog.isEnabled().toString())
             setProperty("smartTermAC.enabled", SmartTermAC.isEnabled().toString())
             setProperty("schizoSim.enabled", SchizoSim.isEnabled().toString())
             setProperty("systemNotifier.enabled", SystemNotifier.isEnabled().toString())
