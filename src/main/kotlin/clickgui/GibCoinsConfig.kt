@@ -112,6 +112,10 @@ object GibCoinsConfig {
             properties.getProperty("partyCommands.kill.enabled")?.toBooleanStrictOrNull()
                 ?: PartyCommandSettings.isKillEnabled()
         )
+        PartyCommandSettings.setDomEnabled(
+            properties.getProperty("partyCommands.dom.enabled")?.toBooleanStrictOrNull()
+                ?: PartyCommandSettings.isDomEnabled()
+        )
         PartyCommandSettings.setBlacklist(
             properties.getProperty("partyCommands.blacklist") ?: PartyCommandSettings.getBlacklist()
         )
@@ -150,6 +154,7 @@ object GibCoinsConfig {
             setProperty("partyCommands.funfact.enabled", PartyCommandSettings.isFunFactEnabled().toString())
             setProperty("partyCommands.shittercheck.enabled", PartyCommandSettings.isShitterCheckEnabled().toString())
             setProperty("partyCommands.kill.enabled", PartyCommandSettings.isKillEnabled().toString())
+            setProperty("partyCommands.dom.enabled", PartyCommandSettings.isDomEnabled().toString())
             setProperty("partyCommands.blacklist", PartyCommandSettings.getBlacklist())
         }
 

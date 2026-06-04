@@ -68,6 +68,7 @@ object CommandManager {
             "funfact" -> PartyCommandSettings.isFunFactEnabled()
             "shittercheck" -> PartyCommandSettings.isShitterCheckEnabled()
             "kill" -> PartyCommandSettings.isKillEnabled()
+            "dom" -> PartyCommandSettings.isDomEnabled()
             else -> true
         }
     }

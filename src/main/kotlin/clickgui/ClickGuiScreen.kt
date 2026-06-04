@@ -266,6 +266,11 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                                 name = "Kill",
                                 enabled = { PartyCommandSettings.isKillEnabled() },
                                 onToggle = { PartyCommandSettings.toggleKill() }
+                            ),
+                            ClickToggleSetting(
+                                name = "Dom",
+                                enabled = { PartyCommandSettings.isDomEnabled() },
+                                onToggle = { PartyCommandSettings.toggleDom() }
                             )
                         )
                     },
