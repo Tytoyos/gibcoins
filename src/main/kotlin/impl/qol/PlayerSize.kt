@@ -13,8 +13,10 @@ import kotlin.math.round
 object PlayerSize {
     private const val DEFAULT_SCALE_TENTHS = 10
     private const val MIN_SCALE_TENTHS = 1
+    private const val MIN_Y_SCALE_TENTHS = -30
     private const val MAX_SCALE_TENTHS = 30
     private const val SCALE_STEP = 0.1
+    private const val PLAYER_MODEL_RENDER_SCALE = 0.9375
     private const val PLAYER_VALIDATION_DELAY_MS = 1250L
 
     private var xScaleTenths = DEFAULT_SCALE_TENTHS
@@ -67,7 +69,7 @@ object PlayerSize {
 
     @JvmStatic
     fun setYScale(value: Double) {
-        yScaleTenths = toScaleTenths(value)
+        yScaleTenths = toScaleTenths(value, MIN_Y_SCALE_TENTHS)
         GibCoinsConfig.save()
     }
 
@@ -87,23 +89,29 @@ object PlayerSize {
     fun getMinScale(): Double = MIN_SCALE_TENTHS * SCALE_STEP
 
     @JvmStatic
+    fun getMinYScale(): Double = MIN_Y_SCALE_TENTHS * SCALE_STEP
+
+    @JvmStatic
     fun getMaxScale(): Double = MAX_SCALE_TENTHS * SCALE_STEP
 
     @JvmStatic
     fun getScaleStep(): Double = SCALE_STEP
 
     @JvmStatic
-    fun applyScale(matrices: MatrixStack) {
+    fun applyScale(renderState: PlayerEntityRenderState, matrices: MatrixStack) {
         if (!enabled || isDefaultScale()) {
             return
         }
 
+        if (yScaleTenths < 0) {
+            matrices.translate(0.0, -renderState.height / PLAYER_MODEL_RENDER_SCALE, 0.0)
+        }
         matrices.scale(getXScale().toFloat(), getYScale().toFloat(), getZScale().toFloat())
     }
 
     @JvmStatic
     fun pullNameLabelWithYScale(renderState: PlayerEntityRenderState, shouldScale: Boolean) {
-        if (!shouldScale || yScaleTenths == DEFAULT_SCALE_TENTHS) {
+        if (!shouldScale || yScaleTenths <= 0 || yScaleTenths == DEFAULT_SCALE_TENTHS) {
             return
         }
 
@@ -134,12 +142,12 @@ object PlayerSize {
             zScaleTenths == DEFAULT_SCALE_TENTHS
     }
 
-    private fun toScaleTenths(value: Double): Int {
+    private fun toScaleTenths(value: Double, minScaleTenths: Int = MIN_SCALE_TENTHS): Int {
         if (!value.isFinite()) {
             return DEFAULT_SCALE_TENTHS
         }
 
-        return round(value / SCALE_STEP).toInt().coerceIn(MIN_SCALE_TENTHS, MAX_SCALE_TENTHS)
+        return round(value / SCALE_STEP).toInt().coerceIn(minScaleTenths, MAX_SCALE_TENTHS)
     }
 
     private fun isRealRemotePlayer(entity: PlayerLikeEntity): Boolean {

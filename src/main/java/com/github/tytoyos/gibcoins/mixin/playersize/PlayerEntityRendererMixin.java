@@ -19,7 +19,7 @@ public class PlayerEntityRendererMixin {
 	)
 	private void gibcoins$scalePlayerModel(PlayerEntityRenderState renderState, MatrixStack matrices, CallbackInfo ci) {
 		if (PlayerSizeRenderContext.shouldScale(renderState)) {
-			PlayerSize.applyScale(matrices);
+			PlayerSize.applyScale(renderState, matrices);
 		}
 	}
 

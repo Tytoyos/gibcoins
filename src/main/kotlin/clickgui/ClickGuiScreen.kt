@@ -163,7 +163,7 @@ class ClickGuiScreen : Screen(Text.literal("GibCoins Click GUI")) {
                             ),
                             ClickSliderSetting(
                                 name = "Y Scale",
-                                min = PlayerSize.getMinScale(),
+                                min = PlayerSize.getMinYScale(),
                                 max = PlayerSize.getMaxScale(),
                                 step = PlayerSize.getScaleStep(),
                                 value = { PlayerSize.getYScale() },
