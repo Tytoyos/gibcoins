@@ -9,6 +9,7 @@ GibCoins is a lightweight addon for Hypixel Skyblock, mainly intended for having
 - InvMeow (Plays a cat sound whenever you proc your invincibility)
 - Schizophrenia
 - Player Size
+- Trophy Fishing qol
 
 I'm actively working on more features. Feel free to contact me, if you want to request a feature.
 
