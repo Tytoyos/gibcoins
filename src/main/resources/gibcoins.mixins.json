@@ -23,6 +23,7 @@
 		"playerhider.PlayerHeadModelRendererMixin",
 		"playerhider.PlayerHeldItemFeatureRendererMixin",
 		"playerhider.SkullBlockEntityRendererMixin",
+		"scathaqol.AbstractBlockStateMixin",
 		"playersize.PlayerEntityRenderStateMixin",
 		"playersize.PlayerEntityRendererMixin"
 	],

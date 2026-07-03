@@ -5,6 +5,8 @@ import impl.qol.PlayerSize
 import impl.qol.DianaQol
 import impl.qol.GoldenFishCI
 import impl.qol.LeapFrog
+import impl.qol.PowderMining
+import impl.qol.ScathaQol
 import debug.DebugMode
 import impl.qol.InvMeow
 import impl.qol.SmartTermAC
@@ -78,6 +80,12 @@ object GibCoinsConfig {
         LeapFrog.setEnabled(
             properties.getProperty("leapFrog.enabled")?.toBooleanStrictOrNull() ?: LeapFrog.isEnabled()
         )
+        PowderMining.setEnabled(
+            properties.getProperty("powderMining.enabled")?.toBooleanStrictOrNull() ?: PowderMining.isEnabled()
+        )
+        ScathaQol.setEnabled(
+            properties.getProperty("scathaQol.enabled")?.toBooleanStrictOrNull() ?: ScathaQol.isEnabled()
+        )
         SmartTermAC.setEnabled(
             properties.getProperty("smartTermAC.enabled")?.toBooleanStrictOrNull() ?: SmartTermAC.isEnabled()
         )
@@ -144,6 +152,8 @@ object GibCoinsConfig {
             setProperty("Diana qol.enabled", DianaQol.isEnabled().toString())
             setProperty("goldenFishCI.enabled", GoldenFishCI.isEnabled().toString())
             setProperty("leapFrog.enabled", LeapFrog.isEnabled().toString())
+            setProperty("powderMining.enabled", PowderMining.isEnabled().toString())
+            setProperty("scathaQol.enabled", ScathaQol.isEnabled().toString())
             setProperty("smartTermAC.enabled", SmartTermAC.isEnabled().toString())
             setProperty("schizoSim.enabled", SchizoSim.isEnabled().toString())
             setProperty("systemNotifier.enabled", SystemNotifier.isEnabled().toString())

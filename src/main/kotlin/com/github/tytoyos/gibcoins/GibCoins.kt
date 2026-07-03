@@ -14,6 +14,7 @@ import debug.TestInvProc
 import impl.qol.GoldenFishCI
 import impl.qol.InvMeow
 import impl.qol.LeapFrog
+import impl.qol.PowderMining
 import impl.qol.SmartTermAC
 import impl.`fun`.Overlay
 import impl.`fun`.SystemNotifier
@@ -36,6 +37,7 @@ object GibCoins : ClientModInitializer {
 		SystemNotifier.register()
 		GoldenFishCI.register()
 		LeapFrog.register()
+		PowderMining.register()
 		SmartTermAC.register()
 
 		ClickGuiCommand().initialize()

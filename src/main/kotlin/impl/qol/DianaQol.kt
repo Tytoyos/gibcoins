@@ -14,7 +14,8 @@ object DianaQol {
         "minecraft:bush",
         "minecraft:red_tulip",
         "minecraft:azure_bluet",
-        "minecraft:rose"
+        "minecraft:rose",
+        "minecraft:peony"
     )
 
     private var enabled = false
