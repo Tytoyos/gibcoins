@@ -34,6 +34,7 @@ object CommandManager {
         register(ShitterCheck())
         register(KillCommand())
         register(DomCommand())
+        register(SubCommand())
     }
 
     private fun register(cmd: PartyCommand) {
@@ -69,6 +70,7 @@ object CommandManager {
             "shittercheck" -> PartyCommandSettings.isShitterCheckEnabled()
             "kill" -> PartyCommandSettings.isKillEnabled()
             "dom" -> PartyCommandSettings.isDomEnabled()
+            "sub" -> PartyCommandSettings.isSubEnabled()
             else -> true
         }
     }

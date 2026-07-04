@@ -8,12 +8,12 @@ class SubCommand : PartyCommand {
     override val name = "sub"
     override fun execute(sender: String, args: List<String>): String {
 
-        val target = args[0].replaceFirstChar { c -> c.uppercase() }
         val user = sender.replaceFirstChar { c -> c.uppercase() }
         val personalRoll = (1..6).random()
 
         if (args.isEmpty()) {
-            val submit = listOf("I swear I was a good girl (｡>﹏<)", "I swear I was a good boy (｡>﹏<)", "I love getting tied down (˶˃⤙˂˶)", "PLEASE PUT ME ON A LEASH!!", "I NEEEEEEEEED ITTT!11!!1")
+            val submit = listOf("I swear I was a good girl (｡>﹏<)", "I swear I was a good boy (｡>﹏<)", "I love getting tied down (˶˃⤙˂˶)", "PLEASE PUT ME ON A LEASH!!", "I'll be good, I promise!",
+                "I NEEEEEEEEED ITTT!11!!1")
 
 
             CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS).execute {
@@ -35,6 +35,7 @@ class SubCommand : PartyCommand {
         }
 
         else {
+            val target = args[0].replaceFirstChar { c -> c.uppercase() }
             val sub = listOf("Asking $target for headpats. (˶˃ᆺ˂˶)")
 
 

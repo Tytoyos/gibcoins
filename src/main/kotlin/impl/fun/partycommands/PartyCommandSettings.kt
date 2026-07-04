@@ -11,6 +11,7 @@ object PartyCommandSettings {
     private var shitterCheckEnabled = true
     private var killEnabled = true
     private var domEnabled = true
+    private var subEnabled = true
     private var blacklist = ""
 
     @JvmStatic
@@ -139,6 +140,22 @@ object PartyCommandSettings {
         domEnabled = !domEnabled
         GibCoinsConfig.save()
         return domEnabled
+    }
+
+    @JvmStatic
+    fun isSubEnabled(): Boolean = subEnabled
+
+    @JvmStatic
+    fun setSubEnabled(value: Boolean) {
+        subEnabled = value
+        GibCoinsConfig.save()
+    }
+
+    @JvmStatic
+    fun toggleSub(): Boolean {
+        subEnabled = !subEnabled
+        GibCoinsConfig.save()
+        return subEnabled
     }
 
     @JvmStatic
